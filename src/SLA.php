@@ -3,47 +3,23 @@
 namespace Sifex\SlaTimer;
 
 use Carbon\Carbon;
-use Carbon\CarbonInterval as CarbonDuration;
+use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
 
 class SLA
 {
-    private const INITIAL_START_TIME = '1970-01-01 00:00:01';
-
-    private $slas = [
-
-    ];
+    /** @var SLASchedule[]  */
+    private array $schedules = [];
 
 
-    public function __construct($definition, $start_time = self::INITIAL_START_TIME)
+    public function __construct(SLASchedule $schedule)
     {
-        $this->defineSLA($definition);
+        $this->defineSLA($schedule);
     }
 
-    /**
-     * @param $definition
-     * @param string|Carbon $start_time
-     */
-    public function defineSLA($definition, $start_time = self::INITIAL_START_TIME)
+    public function defineSLA(SLASchedule $definition)
     {
-        if(! gettype($start_time) === 'string') {
-            $start_time = Carbon::parse($start_time);
-        }
-
-        // 0
-        $initial_duration = CarbonDuration::fromString('0 seconds');
-
-        $start_of_day = '9am';
-        $end_of_day = '5pm';
-
-
-        $startTime = Carbon::create(2022, 6, 10, 8, 20, 0);
-        $endTime = Carbon::now();
-
-        $duration = $startTime->diffInSeconds($endTime, true);
-
-
-
+        $this->schedules[] = $definition;
     }
 
     /**
@@ -56,12 +32,77 @@ class SLA
      *
      */
 
-    /**
-     * Returns
-     * @return CarbonInterval
-     */
-    public function calculate(): CarbonInterval
+    public function calculate($start_date_time)
     {
+        // When the SLA started
+        $start_date_time = Carbon::parse($start_date_time);
 
+        // From where we want to stop counting the SLA up to
+        $end_date_time = Carbon::now();
+
+        // Grab every day between the two dates
+        $period = CarbonPeriod::create($start_date_time, $end_date_time)
+            ->setDateInterval(CarbonInterval::day(1))
+            ->addFilter(function(Carbon $date) {
+                // Filter only the days of the week in the schedule
+
+                foreach ($this->schedules as $schedule) {
+
+                    // TODO add a start validity here
+
+                    foreach ($schedule->days_of_the_week as $day) {
+                        if($date->is($day)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            })
+            ->addFilter(function(Carbon $date) {
+                // Filter out any excluded dates
+
+                foreach ($this->schedules as $schedule) {
+
+                    // TODO add a start validity here
+
+                    foreach ($schedule->excluded_dates as $excluded_day) {
+                        if($date->is($excluded_day[0])) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            });
+
+        $seconds = 0;
+
+        // Iterate over the period
+        $period->forEach(function(Carbon $day) use ($period, $end_date_time, $start_date_time, &$seconds) {
+            foreach ($this->schedules as $schedule) {
+
+                // TODO add a start validity here
+
+                // TODO get overlapping with the period
+
+                
+                foreach ($schedule->daily_periods as $period) {
+                    $start_of_period = max(
+                        $day->copy()->setTimeFrom($period[0]),
+                        $start_date_time,
+                    );
+
+                    $end_of_period = min(
+                        $day->copy()->setTimeFrom($period[1]),
+                        $end_date_time
+                    );
+
+                    $seconds += $start_of_period->diffInSeconds(
+                        $end_of_period
+                    );
+                }
+            }
+        });
+
+        return CarbonInterval::seconds($seconds);
     }
 }
