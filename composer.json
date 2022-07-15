@@ -1,0 +1,46 @@
+{
+    "name": "sifex/sla-timer",
+    "description": "A PHP package for calculating & tracking the Service Level Agreement completion timings",
+    "keywords": [
+        "sifex",
+        "sla-timer"
+    ],
+    "homepage": "https://github.com/sifex/sla-timer",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Alex",
+            "email": "alex@sinn.io",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "nesbot/carbon": "^2.59"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "pestphp/pest": "^1.21",
+        "phpunit/phpunit": "^9.0",
+        "spatie/pest-plugin-test-time": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sifex\\SlaTimer\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sifex\\SlaTimer\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
