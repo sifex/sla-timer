@@ -1,13 +1,6 @@
 name: Tests
 
 on: [ push, pull_request ]
-name: build
-
-on:
-    push:
-        branches: [ master, v1, v2, v3 ]
-    pull_request:
-        branches: [ master, v1, v2, v3 ]
 
 jobs:
     build:
