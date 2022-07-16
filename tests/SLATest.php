@@ -56,23 +56,31 @@ use function Spatie\PestPluginTestTime\testTime;
 //    expect($sla->calculate('2022-07-14 23:00:00')->seconds)->toEqual(1);
 //});
 
+/**
+ * Daily Periods
+ */
+it('tests the SLA across a short duration', function () {
+    $sla = new SLA(
+        new SLASchedule([
+            ['9am', '5pm'],
+            ['18:00:00', '23:59:59'],
+        ])
+    );
+
+    testTime()->freeze('2022-07-14 09:00:30');
+    expect($sla->calculate('2022-07-14 08:59:30')->seconds)->toEqual(30);
+});
+
 it('tests the SLA across a shorter duration', function () {
     $sla = new SLA(
-        new SLASchedule()
+        new SLASchedule([
+            ['9am', '5pm'],
+            ['18:00:00', '23:59:59'],
+        ])
     );
 
     testTime()->freeze('2022-07-14 23:00:11');
     expect($sla->calculate('2022-07-14 23:00:00')->seconds)->toEqual(11);
-});
-
-it('tests the SLA across a short duration', function () {
-    testTime()->freeze('2022-07-14 09:00:30');
-
-    $sla = new SLA(
-        new SLASchedule()
-    );
-
-    expect($sla->calculate('2022-07-14 08:59:30')->seconds)->toEqual(30);
 });
 
 it('tests the SLA across a short duration with custom periods', function () {
@@ -146,10 +154,14 @@ it('tests the SLA across a medium duration with custom periods', function () {
 it('tests the SLA across a time zone', function () {
     $sla = new SLA(
         new SLASchedule([
-            ['09:00:00 AEDT', '09:00:01 AEDT'],
+            ['09:00:00 AEDT', '09:01:00 AEDT'],
         ])
     );
 
-    testTime()->freeze('2022-07-31 09:00:02'); // Now
-    expect($sla->calculate('2022-07-01 09:00:00 AEDT')->seconds)->toEqual(31);
+    testTime()->freeze('2022-07-16 09:02:00')->shiftTimezone('AEDT'); // Now in Australia
+
+    // Expect the SLA to have counted up throughout the Australian Morning
+    expect($sla->calculate('2022-07-16 08:59:00 AEDT')->seconds)->toEqual(60)
+        // but not across GMT's assets
+        ->and($sla->calculate('2022-07-16 08:59:00')->seconds)->toEqual(0);
 });

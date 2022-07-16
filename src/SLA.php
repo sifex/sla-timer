@@ -56,11 +56,9 @@ class SLA
                 // TODO get overlapping with the period
 
                 /** @var CarbonPeriod $period */
-                foreach ($schedule->get_normalised_daily_periods() as $period) {
+                foreach (self::get_normalised_daily_periods($schedule) as $period) {
                     $start_of_period = $day->copy()->setTimeFrom($period->start);
-                    $debug = $start_of_period->toString();
                     $end_of_period = $day->copy()->setTimeFrom($period->end);
-                    $debug = $end_of_period->toString();
 
                     $seconds += self::secondsOfOverlap(
                         CarbonPeriod::create(
@@ -78,7 +76,7 @@ class SLA
         return CarbonInterval::seconds($seconds);
     }
 
-    private function secondsOfOverlap(CarbonPeriod $first_period, CarbonPeriod $second_period): int
+    private static function secondsOfOverlap(CarbonPeriod $first_period, CarbonPeriod $second_period): int
     {
         return $first_period->overlaps($second_period)
             ? self::get_overlapping_area($first_period, $second_period)
@@ -146,5 +144,33 @@ class SLA
         }
 
         return false;
+    }
+
+    private static function get_normalised_daily_periods(SLASchedule $schedule)
+    {
+        /** @var CarbonPeriod[] $periods */
+        $periods = array_map(function ($string_period) use ($schedule) {
+            return CarbonPeriod::create(
+                Carbon::now()->setTimezone($schedule->timezone)->setTimeFrom($string_period[0]),
+                Carbon::now()->setTimezone($schedule->timezone)->setTimeFrom($string_period[1])
+            );
+        }, $schedule->daily_periods);
+
+        return array_reduce($periods, function ($carry, CarbonPeriod $period) {
+            foreach ($carry as $existing_period) {
+                if ($period->overlaps($existing_period)) {
+                    $period = SLA::get_combined_area(
+                        $existing_period, $period
+                    );
+                    foreach (array_keys($carry, $existing_period, true) as $key) {
+                        unset($carry[$key]);
+                    }
+                }
+            }
+
+            $carry[] = $period;
+
+            return $carry;
+        }, []);
     }
 }
