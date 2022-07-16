@@ -5,3 +5,4 @@ coverage
 .phpunit.result.cache
 composer.lock
 .idea/
+clover.xml
