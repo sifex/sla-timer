@@ -1,5 +1,4 @@
-<img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/logo.svg?" width="50%" alt="Logo SLA Timer">
-
+<img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/logo.svg?" width="50%" alt="Logo for SLA Timer">
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sifex/sla-timer.svg?style=flat-square)](https://packagist.org/packages/sifex/sla-timer)
 [![Total Downloads](https://img.shields.io/packagist/dt/sifex/sla-timer.svg?style=flat-square)](https://packagist.org/packages/sifex/sla-timer)
@@ -7,6 +6,8 @@
 
 > **Warning**
 > This repository is currently under construction!  
+
+<img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring.svg?" height="49" alt="Logo for SLA Timer">
 
 A PHP package for calculating & tracking the Service Level Agreement completion timings.
 
