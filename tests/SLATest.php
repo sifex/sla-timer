@@ -236,7 +236,6 @@ it('tests a slightly longer daily schedule\'ed SLA across all weekdays with mult
     ->and(expect($sla->calculate('Friday, 8-July-22 08:59:00')->totalSeconds)->toEqual(17 /* seconds */ * 6 /* days */));
 });
 
-
 it('tests an even longer daily schedule\'ed SLA across all weekdays with multiple overlapping SLAs', function () {
     $sla = new SLA(
         (new SLASchedule([
