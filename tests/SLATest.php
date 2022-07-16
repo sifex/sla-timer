@@ -56,17 +56,17 @@ use function Spatie\PestPluginTestTime\testTime;
 //    expect($sla->calculate('2022-07-14 23:00:00')->totalSeconds)->toEqual(1);
 //});
 
-it('investigates whether I\'ve written the package in time...', function () {
-    $sla = new SLA(
-        (new SLASchedule([
-            ['23:59:', '17:30:00'], // +27k seconds
-            ['09:00:00', '09:30:00'], // +0 second (overlap)
-            ['17:20:00', '17:30:00'], // +0 second (overlap)
-        ]))->onWeekdays()             // =27k seconds
-    );
-
-    expect($sla->calculate('Monday, 11-July-22 08:59:00')->totalSeconds)->toEqual(30600 /* seconds */ * 5 /* days */);
-});
+//it('investigates whether I\'ve written the package in time...', function () {
+//    $sla = new SLA(
+//        (new SLASchedule([
+//            ['23:59:', '17:30:00'], // +27k seconds
+//            ['09:00:00', '09:30:00'], // +0 second (overlap)
+//            ['17:20:00', '17:30:00'], // +0 second (overlap)
+//        ]))->onWeekdays()             // =27k seconds
+//    );
+//
+//    expect($sla->calculate('Monday, 11-July-22 08:59:00')->totalSeconds)->toEqual(30600 /* seconds */ * 5 /* days */);
+//});
 
 /**
  * Daily Periods
