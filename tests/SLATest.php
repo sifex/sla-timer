@@ -1,13 +1,10 @@
 <?php
 
 use Carbon\Carbon;
-use Carbon\CarbonInterface;
-use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
 use Sifex\SlaTimer\SLA;
 use Sifex\SlaTimer\SLASchedule;
 use function Spatie\PestPluginTestTime\testTime;
-
 
 //it('tests the SLA across an SLA definition update', function() {
 //    $start_time = '09:00:00';
@@ -59,17 +56,16 @@ use function Spatie\PestPluginTestTime\testTime;
 //    expect($sla->calculate('2022-07-14 23:00:00')->seconds)->toEqual(1);
 //});
 
-it('tests the SLA across a shorter duration', function() {
-    testTime()->freeze('2022-07-14 23:00:11');
-
+it('tests the SLA across a shorter duration', function () {
     $sla = new SLA(
         new SLASchedule()
     );
 
+    testTime()->freeze('2022-07-14 23:00:11');
     expect($sla->calculate('2022-07-14 23:00:00')->seconds)->toEqual(11);
 });
 
-it('tests the SLA across a short duration', function() {
+it('tests the SLA across a short duration', function () {
     testTime()->freeze('2022-07-14 09:00:30');
 
     $sla = new SLA(
@@ -79,14 +75,60 @@ it('tests the SLA across a short duration', function() {
     expect($sla->calculate('2022-07-14 08:59:30')->seconds)->toEqual(30);
 });
 
-it('tests the SLA across a short duration with custom periods', function() {
-    testTime()->freeze('2022-07-15 09:30:00');
-
+it('tests the SLA across a short duration with custom periods', function () {
     $sla = new SLA(
         new SLASchedule([
-            ['09:00:00', '09:00:30']
+            ['09:00:00', '09:00:30'],
         ])
     );
 
-    expect($sla->calculate('2022-07-14 09:00:30')->seconds)->toEqual(60);
+    testTime()->freeze('2022-07-15 09:00:30'); // Now
+    expect($sla->calculate('2022-07-14 09:00:00')->seconds)->toEqual(60);
+});
+
+it('tests the SLA across a short duration with 2 custom periods', function () {
+    $sla = new SLA(
+        new SLASchedule([
+            ['09:00:00', '09:00:30'],
+            ['09:30:00', '09:30:30'],
+        ])
+    );
+
+    testTime()->freeze('2022-07-14 09:31:00'); // Now
+    expect($sla->calculate('2022-07-14 09:00:00')->seconds)->toEqual(60);
+});
+
+it('tests the SLA across a short duration with 2 custom periods but they overlap', function () {
+    $sla = new SLA(
+        new SLASchedule([
+            ['09:00:00', '09:00:01'],
+            ['09:00:00', '09:00:01'],
+        ])
+    );
+
+    testTime()->freeze('2022-07-14 09:00:02'); // Now
+    expect($sla->calculate('2022-07-14 09:00:00')->seconds)->toEqual(1);
+});
+
+it('tests the SLA across a long duration with custom periods', function () {
+    $sla = new SLA(
+        new SLASchedule([
+            ['09:00:00', '09:00:01'],
+        ])
+    );
+
+    testTime()->freeze('2022-07-31 09:00:02'); // Now
+    expect($sla->calculate('2022-07-01 09:00:00')->seconds)->toEqual(31);
+});
+
+it('tests the SLA across a medium duration with custom periods', function () {
+    $sla = new SLA(
+        new SLASchedule([
+            ['09:00:00', '09:00:01'],
+            ['09:00:00', '09:00:02'],
+        ])
+    );
+
+    testTime()->freeze('2022-07-31 09:00:02'); // Now
+    expect($sla->calculate('2022-07-01 09:00:00')->seconds)->toEqual(31);
 });

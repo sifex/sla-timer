@@ -61,6 +61,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/translation" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/test-time" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/pest-plugin-test-time" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/loophp/collection" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

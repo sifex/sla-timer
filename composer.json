@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
+        "loophp/collection": "^6.0",
         "nesbot/carbon": "^2.59"
     },
     "require-dev": {
