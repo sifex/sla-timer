@@ -3,8 +3,6 @@
 namespace Sifex\SlaTimer;
 
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
-
 
 class SLASchedule
 {
@@ -17,9 +15,11 @@ class SLASchedule
         }
     }
 
-    public function setTimezone(string $timezone)
+    public function setTimezone(string $timezone): SLASchedule
     {
         $this->timezone = $timezone;
+
+        return $this;
     }
 
     /**
@@ -30,7 +30,8 @@ class SLASchedule
     public $valid_from = '1970-01-01 00:00:01';
 
     public $daily_periods = [
-
+        //        ['9am', '5pm'],
+        //        ['18:00:00', '23:59:59'],
     ];
 
     /**
@@ -63,5 +64,24 @@ class SLASchedule
         ['2022-01-01 00:00:01', '2022-02-01 00:00:01', 'Description'],
     ];
 
+    public function setDaysOfWeek(array $days_of_week): SLASchedule
+    {
+        $this->days_of_the_week = [];
+        foreach ($days_of_week as $dayName) {
+            $this->days_of_the_week[] = Carbon::parse($dayName)->dayName;
+        }
 
+        return $this;
+    }
+
+    public function onWeekdays()
+    {
+        return $this->setDaysOfWeek([
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+        ]);
+    }
 }

@@ -73,7 +73,7 @@ class SLA
             }
         });
 
-        return CarbonInterval::seconds($seconds);
+        return CarbonInterval::seconds($seconds)->cascade();
     }
 
     private static function secondsOfOverlap(CarbonPeriod $first_period, CarbonPeriod $second_period): int
