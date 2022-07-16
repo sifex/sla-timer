@@ -1,7 +1,7 @@
 <img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/logo.svg?" width="50%" alt="Logo for SLA Timer">
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/sifex/sla-timer.svg?style=flat-square)](https://packagist.org/packages/sifex/sla-timer)
-[![Total Downloads](https://img.shields.io/packagist/dt/sifex/sla-timer.svg?style=flat-square)](https://packagist.org/packages/sifex/sla-timer)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/sifex/sla-timer.svg?style=flat&labelColor=2c353c)](https://packagist.org/packages/sifex/sla-timer)
+[![Total Downloads](https://img.shields.io/packagist/dt/sifex/sla-timer.svg?style=flat&labelColor=2c353c)](https://packagist.org/packages/sifex/sla-timer)
 ![GitHub Actions](https://github.com/sifex/sla-timer/actions/workflows/main.yml/badge.svg)
 
 > **Warning**
@@ -15,7 +15,7 @@ A PHP package for calculating & tracking the Service Level Agreement completion 
 
 ## Installation
 
-You can install the package via composer:
+You can install the `sla-timer` via composer:
 
 ```bash
 composer require sifex/sla-timer
@@ -24,15 +24,33 @@ composer require sifex/sla-timer
 ## Example Usage
 
 ```php
-$ServiceLevelAgreement = new SLA(
-        (new SLASchedule([
-            ['09:00:00', '17:30:00'],
-            ['09:00:00', '09:30:00'], // Any overlaps are ignored
-        ]))->onWeekdays()
-    );
+/**
+ * Create a new SLA between 9am and 5:30pm weekdays
+ */
+$sla = new SLA(
+    SLASchedule::from([
+        ['09:00:00', '17:30:00']
+    ])->onWeekdays()->andFrom([
+        ['10:30:00', '17:30:00']
+    ])->onWeekends();
+);
 
-// Give the SLA a date from
-$ServiceLevelAgreement->calculate('Monday, 11-July-22 08:59:00'); // Returns a CarbonInterval  
+// Calculate any SLA given a start time
+$ServiceLevelAgreement->calculate('11-July-22 08:59:00'); // CarbonInterval  
+```
+
+### Superseding old schedules
+
+```php
+/**
+ * Create a new schedule effective from 6th July 2022 (that supersedes the old one)
+ */
+$sla->addNewSchedule(
+    SLASchedule::effectiveFrom('2022-07-06')->from([
+        ['09:00:00', '17:30:00']
+    ])->everyDay();
+);
+
 ```
 
 ### Testing
@@ -49,7 +67,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## About
 
-This repository came together after I set myself the challenge to write the proof-of-concept in under 2 hours. After realising the concept of _time_ is one hell of a beast to tackle (especially timezones, [see Tom Scott's video on time-zones](https://www.youtube.com/watch?v=-5wpm-gesOY) for more information), I will end up finishing it in under 24h. 
+This repository came together after I set myself the challenge to write the proof-of-concept in under 2 hours. After realising the concept of _time_ is one hell of a beast to tackle (especially timezones, [see Tom Scott's video on time-zones](https://www.youtube.com/watch?v=-5wpm-gesOY) for more information), I will end up finishing it in under 48h. 
 
 ## Credits
 

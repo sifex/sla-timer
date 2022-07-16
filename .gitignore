@@ -6,3 +6,4 @@ coverage
 composer.lock
 .idea/
 clover.xml
+/docs/node_modules/

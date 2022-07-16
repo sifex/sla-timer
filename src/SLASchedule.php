@@ -8,20 +8,6 @@ class SLASchedule
 {
     public $timezone = 'UTC';
 
-    public function __construct($daily_periods = [])
-    {
-        if (! empty($daily_periods)) {
-            $this->daily_periods = $daily_periods;
-        }
-    }
-
-    public function setTimezone(string $timezone): SLASchedule
-    {
-        $this->timezone = $timezone;
-
-        return $this;
-    }
-
     /**
      * This term outset when the schedule should come into effect
      *
@@ -64,6 +50,20 @@ class SLASchedule
         ['2022-01-01 00:00:01', '2022-02-01 00:00:01', 'Description'],
     ];
 
+    public function __construct($daily_periods = [])
+    {
+        if (! empty($daily_periods)) {
+            $this->daily_periods = $daily_periods;
+        }
+    }
+
+    public function setTimezone(string $timezone): SLASchedule
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
     public function setDaysOfWeek(array $days_of_week): SLASchedule
     {
         $this->days_of_the_week = [];
@@ -74,7 +74,7 @@ class SLASchedule
         return $this;
     }
 
-    public function onWeekdays()
+    public function onWeekdays(): SLASchedule
     {
         return $this->setDaysOfWeek([
             'Monday',

@@ -1,0 +1,29 @@
+export default {
+    title: 'SLA Timer',
+    description: 'Just playing around.',
+    lastUpdated: true,
+    themeConfig: {
+        nav: [
+            { text: 'Guide', link: '/guide/introduction' }
+        ],
+        logo: '/images/small_logo.svg',
+        outlineTitle: 'In hac pagina',
+        sidebar: [
+            {
+                text: 'Guide',
+                items: [
+                    { text: 'Introduction', link: '/guide/introduction' },
+                    { text: 'Getting Started', link: '/guide/getting_started' },
+                ]
+            }
+        ],
+        footer: {
+            message: 'Released under the MIT License.',
+            copyright: 'Copyright © 2022-present alex@sinn.io'
+        },
+
+        socialLinks: [
+            { icon: 'github', link: 'https://github.com/sifex/sla-timer' },
+        ],
+    }
+}
