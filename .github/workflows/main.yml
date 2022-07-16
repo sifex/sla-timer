@@ -1,36 +1,54 @@
 name: Tests
 
-on: [push, pull_request]
+on: [ push, pull_request ]
+name: build
+
+on:
+    push:
+        branches: [ master, v1, v2, v3 ]
+    pull_request:
+        branches: [ master, v1, v2, v3 ]
 
 jobs:
-    test:
-        runs-on: ${{ matrix.os }}
+    build:
+        runs-on: 'ubuntu-latest'
         strategy:
-            fail-fast: true
             matrix:
-                os: [ubuntu-latest, windows-latest]
-                php: [8.0, 7.4]
-                stability: [prefer-lowest, prefer-stable]
-
-        name: P${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.os }}
+                php-versions: [ '8.0', '8.1' ]
 
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v2
+            -   uses: actions/checkout@v2
 
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-                  coverage: none
+            -   name: Setup PHP with PCOV
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    coverage: pcov
 
-            - name: Setup problem matchers
-              run: |
-                  echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-                  echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
-            - name: Install dependencies
-              run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+            -   name: Validate composer.json and composer.lock
+                run: composer validate --strict
 
-            - name: Execute tests
-              run: vendor/bin/pest
+            -   name: Cache Composer packages
+                id: composer-cache
+                uses: actions/cache@v2
+                with:
+                    path: vendor
+                    key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+                    restore-keys: |
+                        ${{ runner.os }}-php-
+
+            -   name: Install dependencies
+                run: composer install --prefer-dist --no-progress --no-interaction
+
+            -   name: Run linter
+                run: ./vendor/bin/pint -v --test
+
+            -   name: Run tests
+                run: vendor/bin/phpunit -c ./phpunit.xml
+
+            -   uses: php-actions/phpstan@v3
+                with:
+                    path: src/
+
+            -   name: phpunit-coverage-badge
+                uses: timkrase/phpunit-coverage-badge@v1.2.0
