@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="502px" height="150px" viewBox="0 0 502 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="503px" height="150px" viewBox="0 0 503 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Group 3</title>
     <defs>
-        <radialGradient cx="23.2287401%" cy="18.920732%" fx="23.2287401%" fy="18.920732%" r="292.148867%" gradientTransform="translate(0.232287,0.189207),scale(0.261290,1.000000),rotate(16.112678),translate(-0.232287,-0.189207)" id="radialGradient-1">
-            <stop stop-color="#F3BD7F" offset="0%"></stop>
-            <stop stop-color="#EA7A88" offset="100%"></stop>
+        <radialGradient cx="2.3433057%" cy="0.861786714%" fx="2.3433057%" fy="0.861786714%" r="386.672775%" gradientTransform="translate(0.023433,0.008618),scale(0.261290,1.000000),rotate(14.855839),translate(-0.023433,-0.008618)" id="radialGradient-1">
+            <stop stop-color="#FFB14D" offset="0%"></stop>
+            <stop stop-color="#FF4F6E" offset="100%"></stop>
         </radialGradient>
         <radialGradient cx="23.2287401%" cy="18.920732%" fx="23.2287401%" fy="18.920732%" r="109.325974%" id="radialGradient-2">
             <stop stop-color="#FFFFFF" offset="0%"></stop>
-            <stop stop-color="#EDE6E7" offset="100%"></stop>
+            <stop stop-color="#EEE6E7" offset="100%"></stop>
         </radialGradient>
-        <radialGradient cx="23.2287401%" cy="18.920732%" fx="23.2287401%" fy="18.920732%" r="109.325974%" id="radialGradient-3">
-            <stop stop-color="#F3BD7F" offset="0%"></stop>
-            <stop stop-color="#EA7A88" offset="100%"></stop>
+        <radialGradient cx="2.3433057%" cy="0.861786714%" fx="2.3433057%" fy="0.861786714%" r="139.158957%" id="radialGradient-3">
+            <stop stop-color="#FFB14D" offset="0%"></stop>
+            <stop stop-color="#FF4F6E" offset="100%"></stop>
         </radialGradient>
     </defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Artboard-Copy" transform="translate(-51.000000, -130.000000)">
-            <g id="Group-3" transform="translate(28.000000, 130.000000)">
+        <g id="Artboard" transform="translate(-51.000000, -130.000000)">
+            <g id="Group-3" transform="translate(51.000000, 130.000000)">
                 <text id="SLA-Timer" fill="url(#radialGradient-1)" fill-rule="nonzero" font-family="SFProDisplay-Semibold, SF Pro Display" font-size="68" font-weight="500">
-                    <tspan x="216" y="100">SLA Timer</tspan>
+                    <tspan x="193" y="100">SLA Timer</tspan>
                 </text>
-                <text id="PHP-Package-for-Serv" font-family="SFProDisplay-Semibold, SF Pro Display" font-size="21" font-weight="500" fill="#676379">
-                    <tspan x="216" y="128">PHP Package for Service Desks</tspan>
+                <text id="PHP-Package-for-Serv" font-family="SFProDisplay-Semibold, SF Pro Display" font-size="21" font-weight="500" fill="#68637B">
+                    <tspan x="193" y="128">PHP Package for Service Desks</tspan>
                 </text>
                 <g id="Group">
-                    <g id="Group-2"></g>
-                    <rect id="Rectangle" fill="url(#radialGradient-2)" x="23" y="0" width="150" height="150" rx="13"></rect>
-                    <path d="M160,0 C167.179702,-1.31888981e-15 173,5.82029825 173,13 L173,137 C173,144.179702 167.179702,150 160,150 L36,150 C28.8202983,150 23,144.179702 23,137 L23,13 C23,5.82029825 28.8202983,1.31888981e-15 36,0 L160,0 Z M98,13 C63.7583456,13 36,40.7583452 36,75 C36,97.1504662 47.8171332,117.618342 67,128.693575 C86.1828666,139.768808 109.817133,139.768808 129,128.693575 C148.182867,117.618342 160,97.1504662 160,75 C160,40.7583452 132.241654,13 98,13 Z M98,25 C125.614237,25 148,47.3857623 148,75 C148,92.8632791 138.470054,109.36963 123,118.30127 C107.529946,127.23291 88.4700538,127.23291 73,118.30127 C57.5299461,109.36963 48,92.8632791 48,75 C48,47.3857623 70.3857626,25 98,25 Z M95,46.0811081 C91.6862915,46.0811081 89,48.7673996 89,52.0811081 L89,52.0811081 L89,79.999999 L89.0040357,80.2220331 C89.1193939,83.3904666 91.6935886,85.9399813 94.8892522,85.9989768 L94.8892522,85.9989768 L121.973262,86.498992 L122.198238,86.498992 C125.409361,86.439963 128.023213,83.8485931 128.083001,80.6107478 L128.083001,80.6107478 L128.083001,80.3857715 C128.023972,77.174648 125.432603,74.5607964 122.194757,74.5010222 L122.194757,74.5010222 L101,74.11 L101,52.0811081 L100.995862,51.8561698 C100.877572,48.646683 98.2383969,46.0811081 95,46.0811081 Z" id="Combined-Shape" fill="url(#radialGradient-3)"></path>
+                    <rect id="Rectangle" fill="url(#radialGradient-2)" x="0" y="0" width="150" height="150" rx="13"></rect>
+                    <path d="M137,0 C144.179702,-1.31888981e-15 150,5.82029825 150,13 L150,137 C150,144.179702 144.179702,150 137,150 L13,150 C5.82029825,150 8.79259876e-16,144.179702 0,137 L0,13 C-8.79259876e-16,5.82029825 5.82029825,1.31888981e-15 13,0 L137,0 Z M75,13 C40.7583456,13 13,40.7583452 13,75 C13,97.1504662 24.8171332,117.618342 44,128.693575 C63.1828666,139.768808 86.8171334,139.768808 106,128.693575 C125.182867,117.618342 137,97.1504662 137,75 C137,40.7583452 109.241654,13 75,13 Z M75,25 C102.614237,25 125,47.3857623 125,75 C125,92.8632791 115.470054,109.36963 100,118.30127 C84.5299462,127.23291 65.4700538,127.23291 50,118.30127 C34.5299461,109.36963 25,92.8632791 25,75 C25,47.3857623 47.3857626,25 75,25 Z M72,46.0811081 C68.6862915,46.0811081 66,48.7673996 66,52.0811081 L66,52.0811081 L66,79.999999 L66.0040357,80.2220331 C66.1193939,83.3904666 68.6935886,85.9399813 71.8892522,85.9989768 L71.8892522,85.9989768 L98.9732617,86.498992 L99.198238,86.498992 C102.409361,86.439963 105.023213,83.8485931 105.083001,80.6107478 L105.083001,80.6107478 L105.083001,80.3857715 C105.023972,77.174648 102.432603,74.5607964 99.1947573,74.5010222 L99.1947573,74.5010222 L78,74.11 L78,52.0811081 L77.9958615,51.8561698 C77.8775718,48.646683 75.2383969,46.0811081 72,46.0811081 Z" id="Combined-Shape" fill="url(#radialGradient-3)"></path>
                 </g>
             </g>
         </g>
