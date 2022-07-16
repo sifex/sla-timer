@@ -1,16 +1,14 @@
-<p align="center"><img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/logo.svg?" width="50%" alt="Logo SLA Timer"></p>
+<img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/logo.svg?" width="50%" alt="Logo SLA Timer">
 
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sifex/sla-timer.svg?style=flat-square)](https://packagist.org/packages/sifex/sla-timer)
 [![Total Downloads](https://img.shields.io/packagist/dt/sifex/sla-timer.svg?style=flat-square)](https://packagist.org/packages/sifex/sla-timer)
 ![GitHub Actions](https://github.com/sifex/sla-timer/actions/workflows/main.yml/badge.svg)
 
-
 > **Warning**
 > This repository is currently under construction!  
 
-
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+A PHP package for calculating & tracking the Service Level Agreement completion timings.
 
 ## Installation
 
@@ -20,10 +18,18 @@ You can install the package via composer:
 composer require sifex/sla-timer
 ```
 
-## Usage
+## Example Usage
 
 ```php
-// Usage description here
+$ServiceLevelAgreement = new SLA(
+        (new SLASchedule([
+            ['09:00:00', '17:30:00'],
+            ['09:00:00', '09:30:00'], // Any overlaps are ignored
+        ]))->onWeekdays()
+    );
+
+// Give the SLA a date from
+$ServiceLevelAgreement->calculate('Monday, 11-July-22 08:59:00'); // Returns a CarbonInterval  
 ```
 
 ### Testing
