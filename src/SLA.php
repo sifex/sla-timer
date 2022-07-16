@@ -41,7 +41,7 @@ class SLA
         $end_date_time = Carbon::now();
 
         // Grab every day between the two dates
-        $period = CarbonPeriod::create($start_date_time, $end_date_time)
+        $current_duration = CarbonPeriod::create($start_date_time, $end_date_time)
             ->setDateInterval(CarbonInterval::day(1))
             ->addFilter(function(Carbon $date) {
                 // Filter only the days of the week in the schedule
@@ -77,32 +77,39 @@ class SLA
         $seconds = 0;
 
         // Iterate over the period
-        $period->forEach(function(Carbon $day) use ($period, $end_date_time, $start_date_time, &$seconds) {
+        $current_duration->forEach(function(Carbon $day) use ($current_duration, $end_date_time, $start_date_time, &$seconds) {
             foreach ($this->schedules as $schedule) {
 
                 // TODO add a start validity here
 
                 // TODO get overlapping with the period
 
-                
                 foreach ($schedule->daily_periods as $period) {
-                    $start_of_period = max(
-                        $day->copy()->setTimeFrom($period[0]),
-                        $start_date_time,
-                    );
 
-                    $end_of_period = min(
-                        $day->copy()->setTimeFrom($period[1]),
-                        $end_date_time
-                    );
+                    $start_of_period = $day->copy()->setTimeFrom($period[0]);
+                    $end_of_period = $day->copy()->setTimeFrom($period[1]);
 
-                    $seconds += $start_of_period->diffInSeconds(
-                        $end_of_period
+                    $seconds += self::secondsOfOverlap(
+                        CarbonPeriod::create(
+                            $start_of_period,
+                            $end_of_period
+                        ), CarbonPeriod::create(
+                            $start_date_time,
+                            $end_date_time
+                        )
                     );
                 }
             }
         });
 
         return CarbonInterval::seconds($seconds);
+    }
+
+    public function secondsOfOverlap(CarbonPeriod $start_period, CarbonPeriod $end_period)
+    {
+        return $start_period->overlaps($end_period)
+            ? $start_period->start->diffAsCarbonInterval($end_period->end)->seconds
+            : 0;
+
     }
 }

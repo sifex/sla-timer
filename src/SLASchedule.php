@@ -8,6 +8,13 @@ use Carbon\CarbonPeriod;
 
 class SLASchedule
 {
+    public function __construct($daily_periods = [])
+    {
+        if (!empty($daily_periods)) {
+            $this->daily_periods = $daily_periods;
+        }
+    }
+
     /**
      * This term outset when the schedule should come into effect
      * @var string

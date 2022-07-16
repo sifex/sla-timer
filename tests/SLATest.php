@@ -48,27 +48,45 @@ use function Spatie\PestPluginTestTime\testTime;
 //    expect($seconds)->toEqual($seconds_2);
 //});
 
+//it('tests the SLA across an SLA definition update2', function() {
+//    $sla = new SLA(new SLASchedule()
+//        // Describe each period (9am – 5pm, 6pm – 11:59pm)
+//        // Describe each day it's on
+//        // Describe each day it's been disabled on (holidays)
+//        // Describe the effective start date
+//    );
+//
+//    expect($sla->calculate('2022-07-14 23:00:00')->seconds)->toEqual(1);
+//});
 
-it('tests the SLA across an SLA definition update2', function() {
-    $sla = new SLA(new SLASchedule()
-        // Describe each period (9am – 5pm, 6pm – 11:59pm)
-        // Describe each day it's on
-        // Describe each day it's been disabled on (holidays)
-        // Describe the effective start date
-    );
-
-    expect($sla->calculate('2022-07-14 23:00:00')->seconds)->toEqual(1);
-});
-
-it('tests the SLA across a short duration', function() {
+it('tests the SLA across a shorter duration', function() {
     testTime()->freeze('2022-07-14 23:00:11');
 
-    $sla = new SLA(new SLASchedule()
-        // Describe each period (9am – 5pm, 6pm – 11:59pm)
-        // Describe each day it's on
-        // Describe each day it's been disabled on (holidays)
-        // Describe the effective start date
+    $sla = new SLA(
+        new SLASchedule()
     );
 
     expect($sla->calculate('2022-07-14 23:00:00')->seconds)->toEqual(11);
+});
+
+it('tests the SLA across a short duration', function() {
+    testTime()->freeze('2022-07-14 09:00:30');
+
+    $sla = new SLA(
+        new SLASchedule()
+    );
+
+    expect($sla->calculate('2022-07-14 08:59:30')->seconds)->toEqual(30);
+});
+
+it('tests the SLA across a short duration with custom periods', function() {
+    testTime()->freeze('2022-07-15 09:30:00');
+
+    $sla = new SLA(
+        new SLASchedule([
+            ['09:00:00', '09:00:30']
+        ])
+    );
+
+    expect($sla->calculate('2022-07-14 09:00:30')->seconds)->toEqual(60);
 });
