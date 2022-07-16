@@ -13,13 +13,16 @@ hero:
       text: View on GitHub
       link: https://github.com/sifex/sla-timer
 features:
-  - icon: ⚡️
-    title: Vite, The DX that can't be beat
-    details: Lorem ipsum...
-  - icon: 🖖
-    title: Power of Vue meets Markdown
-    details: Lorem ipsum...
-  - icon: 🛠️
-    title: Simple and minimal, always
-    details: Lorem ipsum...
+  - icon: 🕚
+    title: Daily & Per-Day Scheduling
+    details: SLA Timer makes it super easy to set those pesky 9 to 5's
+  - icon: ‼️
+    title: Breaches
+    details: Set multiple thresholds for when an SLA is breached
+  - icon: 📅
+    title: Holiday Time
+    details: Simply set up skipped days, holidays, & setup pause periods
 ---
+
+
+

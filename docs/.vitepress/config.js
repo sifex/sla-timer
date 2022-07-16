@@ -14,6 +14,7 @@ export default {
                 items: [
                     { text: 'Introduction', link: '/guide/introduction' },
                     { text: 'Getting Started', link: '/guide/getting_started' },
+                    { text: 'Holidays & Skipped Days', link: '/guide/holidays' },
                 ]
             }
         ],
@@ -21,7 +22,6 @@ export default {
             message: 'Released under the MIT License.',
             copyright: 'Copyright © 2022-present alex@sinn.io'
         },
-
         socialLinks: [
             { icon: 'github', link: 'https://github.com/sifex/sla-timer' },
         ],

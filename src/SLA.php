@@ -8,15 +8,25 @@ use Carbon\CarbonPeriod;
 
 class SLA
 {
-    /** @var SLASchedule[] */
-    private array $schedules = [];
+    /**
+     * @var SLASchedule[]
+     */
+    public array $schedules = [];
 
+    /**
+     * @var SLABreach[]
+     */
+    private array $breach_definitions = [];
+
+    /**
+     * @param  SLASchedule  $schedule
+     */
     public function __construct(SLASchedule $schedule)
     {
-        $this->defineSLA($schedule);
+        $this->define_schedule($schedule);
     }
 
-    public function defineSLA(SLASchedule $definition)
+    public function define_schedule(SLASchedule $definition)
     {
         // TODO Normalise SLAs so that no two periods overlap
         $this->schedules[] = $definition;

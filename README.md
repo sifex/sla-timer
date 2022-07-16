@@ -12,12 +12,12 @@ A PHP package for calculating & tracking the Service Level Agreement completion 
 
 ### Features
 
-- Daily scheduling
-- Per-day scheduling
-- 
+- 🕚 Daily & Per-Day scheduling
+- ‼️ Defined breaches
+- 🏝 Holiday & Paused Durations
 
 <a href="https://twitter.com/sifex/status/1548374115815346178">
-<img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring.svg?" height="49" alt="Logo for SLA Timer">
+<img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring.svg?" alt="Hi, I'm Alex & I'm currently looking for a Laravel job. Please reach out to me via twitter, or click this link." height="49">
 </a>
 
 
@@ -31,20 +31,63 @@ composer require sifex/sla-timer
 
 ## Example Usage
 
+SLA Timer provides an API for you to compose your own uses [`Carbon\Carbon`](https://carbon.nesbot.com/docs) to calculate the 
+To create a new SLA between 9am and 5:30pm weekdays, use the following 
+
+```php
+
+$sla = new SLA(
+    SLASchedule::from('09:00:00')->to('17:30:00')
+            ->onWeekdays()
+            ->except(['25 Dec 2022'])
+)->addBreaches([
+    SLABreach('first_response', '45m'),
+]);
+
+$status = $sla->startedAt('11-July-22 08:59:00')->breaches // SLAStatus
+$status->breaches // SLABreach('first_response');
+
+```
+
+### Complex & Multiple Schedules
+
 ```php
 /**
  * Create a new SLA between 9am and 5:30pm weekdays
  */
 $sla = new SLA(
-    SLASchedule::from([
-        ['09:00:00', '17:30:00']
-    ])->onWeekdays()->andFrom([
-        ['10:30:00', '17:30:00']
-    ])->onWeekends();
-);
+    SLASchedule::from('09:00:00')->to('17:30:00')->onWeekdays()
+            ->andFrom('10:30:00')->to('17:30:00')->onWeekends()
+            ->andFrom('17:30:00')->to('23:00:00')->on('Monday')
+            ->andFrom('17:30:00')->to('10:00:00')->on(['Tuesday', 'Saturday'])
+            ->except(['25 Dec 2021'])
+)
 
-// Calculate any SLA given a start time
-$ServiceLevelAgreement->calculate('11-July-22 08:59:00'); // CarbonInterval  
+// Calculate any SLA given a start time and return a CarbonInterval
+$sla->duration('11-July-22 08:59:00')->totalSeconds = 12345;
+```
+
+### Breaches
+
+```php
+/**
+ * Create a new SLA between 9am and 5:30pm weekdays
+ */
+$sla = new SLA(
+    SLASchedule::from('09:00:00')->to('17:30:00')->onWeekdays()
+            ->andFrom('10:30:00')->to('17:30:00')->onWeekends()
+            ->andFrom('17:30:00')->to('23:00:00')->on('Monday')
+            ->andFrom('17:30:00')->to('10:00:00')->on(['Tuesday', 'Saturday'])
+            ->except(['25 Dec 2021'])
+)->addBreaches([
+    SLABreach('first_response', '45m'),
+    SLABreach('resolution', '1d 2h'),
+]);
+
+$status = $sla->status('11-July-22 08:59:00')->breaches;
+
+// Calculate any SLA given a start time and return a CarbonInterval
+$sla->duration('11-July-22 08:59:00')->totalSeconds = 12345;
 ```
 
 ### Superseding old schedules
