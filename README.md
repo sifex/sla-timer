@@ -7,11 +7,19 @@
 > **Warning**
 > This repository is currently under construction!  
 
+
+A PHP package for calculating & tracking the Service Level Agreement completion timings.
+
+### Features
+
+- Daily scheduling
+- Per-day scheduling
+- 
+
 <a href="https://twitter.com/sifex/status/1548374115815346178">
 <img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring.svg?" height="49" alt="Logo for SLA Timer">
 </a>
 
-A PHP package for calculating & tracking the Service Level Agreement completion timings.
 
 ## Installation
 

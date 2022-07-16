@@ -56,8 +56,6 @@ use function Spatie\PestPluginTestTime\testTime;
 //    expect($sla->calculate('2022-07-14 23:00:00')->totalSeconds)->toEqual(1);
 //});
 
-
-
 it('investigates whether I\'ve written the package in time...', function () {
     $sla = new SLA(
         (new SLASchedule([
@@ -69,7 +67,6 @@ it('investigates whether I\'ve written the package in time...', function () {
 
     expect($sla->calculate('Monday, 11-July-22 08:59:00')->totalSeconds)->toEqual(30600 /* seconds */ * 5 /* days */);
 });
-
 
 /**
  * Daily Periods
