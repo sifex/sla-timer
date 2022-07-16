@@ -37,7 +37,7 @@ jobs:
                 run: ./vendor/bin/pint -v --test
 
             -   name: Run tests
-                run: vendor/bin/pest -v
+                run: ./vendor/bin/pest -v
 
             -   uses: php-actions/phpstan@v3
                 with:
