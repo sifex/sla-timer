@@ -38,17 +38,9 @@ $ServiceLevelAgreement->calculate('Monday, 11-July-22 08:59:00'); // Returns a C
 composer test
 ```
 
-### Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
-
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-### Security
-
-If you discover any security related issues, please email alex@sinn.io instead of using the issue tracker.
 
 ## Credits
 
@@ -58,7 +50,3 @@ If you discover any security related issues, please email alex@sinn.io instead o
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-## PHP Package Boilerplate
-
-This package was generated using the [PHP Package Boilerplate](https://laravelpackageboilerplate.com) by [Beyond Code](http://beyondco.de/).
