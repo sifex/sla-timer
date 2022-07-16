@@ -5,7 +5,6 @@ namespace Sifex\SlaTimer;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
-use loophp\collection\Collection;
 
 class SLA
 {
@@ -43,9 +42,8 @@ class SLA
         // Grab every day between the two dates
         $current_duration = CarbonPeriod::create($start_date_time, $end_date_time)
             ->setDateInterval(CarbonInterval::day(1))
-            ->addFilter(fn(Carbon $date) => $this->filter_in_days_of_week_in_schedule($date))
-            ->addFilter(fn(Carbon $date) => $this->filter_out_excluded_dates($date));
-
+            ->addFilter(fn (Carbon $date) => $this->filter_in_days_of_week_in_schedule($date))
+            ->addFilter(fn (Carbon $date) => $this->filter_out_excluded_dates($date));
 
         $seconds = 0;
 
@@ -57,10 +55,11 @@ class SLA
 
                 // TODO get overlapping with the period
 
-                foreach ($schedule->daily_periods as $period) {
-                    $start_of_period = $day->copy()->setTimeFrom($period[0]);
+                /** @var CarbonPeriod $period */
+                foreach ($schedule->get_normalised_daily_periods() as $period) {
+                    $start_of_period = $day->copy()->setTimeFrom($period->start);
                     $debug = $start_of_period->toString();
-                    $end_of_period = $day->copy()->setTimeFrom($period[1]);
+                    $end_of_period = $day->copy()->setTimeFrom($period->end);
                     $debug = $end_of_period->toString();
 
                     $seconds += self::secondsOfOverlap(
@@ -79,16 +78,36 @@ class SLA
         return CarbonInterval::seconds($seconds);
     }
 
-    private function secondsOfOverlap(CarbonPeriod $start_period, CarbonPeriod $end_period): int
+    private function secondsOfOverlap(CarbonPeriod $first_period, CarbonPeriod $second_period): int
     {
-        return $start_period->overlaps($end_period)
-            ? max($start_period->start, $end_period->start)->diffAsCarbonInterval(min($start_period->end, $end_period->end))->seconds
+        return $first_period->overlaps($second_period)
+            ? self::get_overlapping_area($first_period, $second_period)
+                ->start->diffInSeconds(
+                    self::get_overlapping_area($first_period, $second_period)->end
+                )
             : 0;
+    }
+
+    public static function get_overlapping_area(CarbonPeriod $first, CarbonPeriod $second): CarbonPeriod
+    {
+        return new CarbonPeriod(
+            max($first->start, $second->start),
+            min($first->end, $second->end)
+        );
+    }
+
+    public static function get_combined_area(CarbonPeriod $first, CarbonPeriod $second): CarbonPeriod
+    {
+        return new CarbonPeriod(
+            min($first->start, $second->start),
+            max($first->end, $second->end)
+        );
     }
 
     /**
      * Filter only the days of the week in the schedule
-     * @param Carbon $date
+     *
+     * @param  Carbon  $date
      * @return bool
      */
     private function filter_in_days_of_week_in_schedule(Carbon $date): bool
@@ -109,7 +128,8 @@ class SLA
 
     /**
      * Filter out any excluded dates
-     * @param Carbon $date
+     *
+     * @param  Carbon  $date
      * @return bool
      */
     private function filter_out_excluded_dates(Carbon $date): bool

@@ -122,13 +122,34 @@ it('tests the SLA across a long duration with custom periods', function () {
 });
 
 it('tests the SLA across a medium duration with custom periods', function () {
-    $sla = new SLA(
+    $sla_one = new SLA(
+        new SLASchedule([
+            ['09:00:00', '09:00:02'],
+        ])
+    );
+
+    $sla_two = new SLA(
         new SLASchedule([
             ['09:00:00', '09:00:01'],
+            ['09:00:00', '09:00:02'],
+            ['09:00:00', '09:00:02'],
             ['09:00:00', '09:00:02'],
         ])
     );
 
     testTime()->freeze('2022-07-31 09:00:02'); // Now
-    expect($sla->calculate('2022-07-01 09:00:00')->seconds)->toEqual(31);
+
+    expect($sla_one->calculate('2022-07-01 09:00:00')->seconds)
+        ->toEqual($sla_two->calculate('2022-07-01 09:00:00')->seconds);
+});
+
+it('tests the SLA across a time zone', function () {
+    $sla = new SLA(
+        new SLASchedule([
+            ['09:00:00 AEDT', '09:00:01 AEDT'],
+        ])
+    );
+
+    testTime()->freeze('2022-07-31 09:00:02'); // Now
+    expect($sla->calculate('2022-07-01 09:00:00 AEDT')->seconds)->toEqual(31);
 });

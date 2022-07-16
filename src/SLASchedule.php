@@ -3,6 +3,7 @@
 namespace Sifex\SlaTimer;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class SLASchedule
 {
@@ -55,8 +56,31 @@ class SLASchedule
         ['2022-01-01 00:00:01', '2022-02-01 00:00:01', 'Description'],
     ];
 
-    protected function get_normalised_daily_periods()
+    public function get_normalised_daily_periods()
     {
-        return $this->daily_periods
+        /** @var CarbonPeriod[] $periods */
+        $periods = array_map(function ($string_period) {
+            return CarbonPeriod::create(
+                Carbon::now()->setTimeFrom($string_period[0]),
+                Carbon::now()->setTimeFrom($string_period[1])
+            );
+        }, $this->daily_periods);
+
+        return array_reduce($periods, function ($carry, CarbonPeriod $period) {
+            foreach ($carry as $existing_period) {
+                if ($period->overlaps($existing_period)) {
+                    $period = SLA::get_combined_area(
+                        $existing_period, $period
+                    );
+                    foreach (array_keys($carry, $existing_period, true) as $key) {
+                        unset($carry[$key]);
+                    }
+                }
+            }
+
+            $carry[] = $period;
+
+            return $carry;
+        }, []);
     }
 }

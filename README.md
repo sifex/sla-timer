@@ -1,4 +1,4 @@
-# SLA Timer
+<p align="center"><img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/logo.svg" width="50%" alt="Logo SLA Timer"></p>
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sifex/sla-timer.svg?style=flat-square)](https://packagist.org/packages/sifex/sla-timer)
 [![Total Downloads](https://img.shields.io/packagist/dt/sifex/sla-timer.svg?style=flat-square)](https://packagist.org/packages/sifex/sla-timer)
