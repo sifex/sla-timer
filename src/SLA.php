@@ -32,25 +32,27 @@ class SLA
         $this->schedules[] = $definition;
     }
 
-    /**
-     * ––––– Schedule –––––
-     * Start On
-     * Stop On
-     *
-     * Versioning (ie. one SLA before this date, and one after this date)
-     * TimeZone
-     */
-    public function calculate($start_date_time): CarbonInterval
+    public static function fromSchedule(SLASchedule $definition)
+    {
+        return new self($definition);
+    }
+
+    public function latestSchedule(): SLASchedule
+    {
+        return end($this->schedules);
+    }
+
+    public function startedAt($subject_start_time): SLAStatus
     {
         // When the SLA started
-        $start_date_time = Carbon::parse($start_date_time);
+        $subject_start_time = Carbon::parse($subject_start_time);
 
         // From where we want to stop counting the SLA up to
         // TODO Customise the stop time
         $end_date_time = Carbon::now();
 
         // Grab every day between the two dates
-        $current_duration = CarbonPeriod::create($start_date_time, $end_date_time)
+        $current_full_duration = CarbonPeriod::create($subject_start_time, $end_date_time)
             ->setDateInterval(CarbonInterval::day(1))
             ->addFilter(fn (Carbon $date) => $this->filter_in_days_of_week_in_schedule($date))
             ->addFilter(fn (Carbon $date) => $this->filter_out_excluded_dates($date));
@@ -58,7 +60,7 @@ class SLA
         $seconds = 0;
 
         // Iterate over the period
-        $current_duration->forEach(function (Carbon $day) use ($end_date_time, $start_date_time, &$seconds) {
+        $current_full_duration->forEach(function (Carbon $day) use ($end_date_time, $subject_start_time, &$seconds) {
             foreach ($this->schedules as $schedule) {
 
                 // TODO add a start validity here
@@ -75,7 +77,7 @@ class SLA
                             $start_of_period,
                             $end_of_period
                         ), CarbonPeriod::create(
-                            $start_date_time,
+                            $subject_start_time,
                             $end_date_time
                         )
                     );
@@ -83,7 +85,7 @@ class SLA
             }
         });
 
-        return CarbonInterval::seconds($seconds)->cascade();
+        return new SLAStatus([], CarbonInterval::seconds($seconds)->cascade());
     }
 
     private static function secondsOfOverlap(CarbonPeriod $first_period, CarbonPeriod $second_period): int
@@ -124,10 +126,13 @@ class SLA
 
             // TODO add a start validity here
 
-            foreach ($schedule->days_of_the_week as $day) {
-                if ($date->is($day)) {
-                    return true;
+            foreach ($schedule->periods as $programme) {
+                foreach ($programme->days as $day_name) {
+                    if ($date->is($day_name)) {
+                        return true;
+                    }
                 }
+
             }
         }
 
@@ -142,45 +147,23 @@ class SLA
      */
     private function filter_out_excluded_dates(Carbon $date): bool
     {
-        foreach ($this->schedules as $schedule) {
-
-            // TODO add a start validity here
-
-            foreach ($schedule->days_of_the_week as $day) {
-                if ($date->is($day)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return true;
+//        foreach ($this->schedules as $schedule) {
+//
+//            // TODO add a start validity here
+//
+//            foreach ($schedule->days_of_the_week as $day) {
+//                if ($date->is($day)) {
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
     }
 
     private static function get_normalised_daily_periods(SLASchedule $schedule)
     {
-        /** @var CarbonPeriod[] $periods */
-        $periods = array_map(function ($string_period) use ($schedule) {
-            return CarbonPeriod::create(
-                Carbon::now()->setTimezone($schedule->timezone)->setTimeFrom($string_period[0]),
-                Carbon::now()->setTimezone($schedule->timezone)->setTimeFrom($string_period[1])
-            );
-        }, $schedule->daily_periods);
 
-        return array_reduce($periods, function ($carry, CarbonPeriod $period) {
-            foreach ($carry as $existing_period) {
-                if ($period->overlaps($existing_period)) {
-                    $period = SLA::get_combined_area(
-                        $existing_period, $period
-                    );
-                    foreach (array_keys($carry, $existing_period, true) as $key) {
-                        unset($carry[$key]);
-                    }
-                }
-            }
-
-            $carry[] = $period;
-
-            return $carry;
-        }, []);
     }
 }

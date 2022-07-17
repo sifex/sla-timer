@@ -2,8 +2,6 @@
 
 namespace Sifex\SlaTimer\Traits;
 
-use Sifex\SlaTimer\SLA;
-use Sifex\SlaTimer\SLAProgramme;
 use Sifex\SlaTimer\SLASchedule;
 
 trait HasTimezone
