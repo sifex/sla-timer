@@ -126,8 +126,8 @@ class SLA
 
             // TODO add a start validity here
 
-            foreach ($schedule->periods as $programme) {
-                foreach ($programme->days as $day_name) {
+            foreach ($schedule->agendas as $agenda) {
+                foreach ($agenda->days as $day_name) {
                     if ($date->is($day_name)) {
                         return true;
                     }

@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Sifex\SlaTimer\Exceptions\SLAException;
 
-class SLAProgramme
+class SLAAgenda
 {
     /** @var CarbonPeriod[] */
     public array $time_periods = [];
@@ -14,7 +14,7 @@ class SLAProgramme
     /** @var CarbonPeriod[] */
     public array $days = [];
 
-    public function addTimePeriod(string $start_time, string $end_time): SLAProgramme
+    public function addTimePeriod(string $start_time, string $end_time): SLAAgenda
     {
         $this->time_periods[] = CarbonPeriod::create(
             Carbon::parse($start_time),
@@ -24,10 +24,7 @@ class SLAProgramme
         return $this;
     }
 
-    /**
-     * @throws SLAException
-     */
-    public function setDays(array $days): SLAProgramme
+    public function setDays(array $days): SLAAgenda
     {
         $this->days = [];
 
@@ -36,7 +33,7 @@ class SLAProgramme
                 $this->days[] = Carbon::parse($day)->dayName;
             }
         } catch (\Exception $e) {
-            throw new SLAException('Could not parse day '.$day);
+            // throw new SLAException('Could not parse day '.$day);
         }
 
         return $this;
