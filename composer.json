@@ -17,6 +17,8 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
+        "cmixin/enhanced-period": "^1.2",
+        "illuminate/collections": "^9.20",
         "nesbot/carbon": "^2"
     },
     "require-dev": {
