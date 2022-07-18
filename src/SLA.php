@@ -63,10 +63,9 @@ class SLA
             ->addFilter(fn (Carbon $date) => $this->filter_in_days_of_week_in_schedule($date))
             ->addFilter(fn (Carbon $date) => $this->filter_out_excluded_dates($date));
 
-        $seconds = 0;
-
         // Iterate over the period
-        $current_full_duration->forEach(function (CarbonPeriod $daily_subject_period) use ($end_date_time, $subject_start_time) {
+        /** @var CarbonInterval $intervals */
+        $intervals = $current_full_duration->map(function (CarbonPeriod $daily_subject_period) use ($end_date_time, $subject_start_time) {
             /** @var SLASchedule $enabled_schedule */
             $enabled_schedule = collect($this->schedules)
                 ->filter(function($schedule) {
@@ -74,19 +73,18 @@ class SLA
                 })
                 ->last();
 
-            /** @var CarbonPeriod[] $overlapped_collection */
             $overlapped_collection = $daily_subject_period->overlapAny(
                 collect($enabled_schedule->agendas)->flatMap(function(SLAAgenda $agenda) use ($daily_subject_period) {
                     return $agenda->getPeriodsForDay($daily_subject_period->start->dayName);
                 })->toArray()
             );
 
-            collect($overlapped_collection)->each(function(CarbonPeriod $overlap) {
-                $overlap
-            });
+            return CarbonInterval::seconds(collect($overlapped_collection)->reduce(function($carried_seconds, CarbonPeriod $overlap) {
+                return $carried_seconds + $overlap->interval->totalSeconds;
+            }, 0))->cascade();
         });
 
-        return new SLAStatus([], CarbonInterval::seconds($seconds)->cascade());
+        return new SLAStatus([/* Breaches */], $intervals);
     }
 
     /**
