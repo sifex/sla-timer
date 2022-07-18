@@ -2,13 +2,9 @@
 
 namespace Sifex\SlaTimer\Traits;
 
-use Carbon\CarbonPeriod;
-use DusanKasan\Knapsack\Collection;
 use Sifex\SlaTimer\Exceptions\SLAException;
-use Sifex\SlaTimer\SLA;
 use Sifex\SlaTimer\SLAAgenda;
 use Sifex\SlaTimer\SLASchedule;
-use function DusanKasan\Knapsack\contains;
 
 trait CanComposeSLASchedules
 {
@@ -36,9 +32,9 @@ trait CanComposeSLASchedules
     {
         // Timezone shifts for each time period
         $this->agendas = collect($this->agendas)
-            ->each(function(SLAAgenda $agenda) {
+            ->each(function (SLAAgenda $agenda) {
                 $agenda->time_periods = collect($agenda->time_periods)
-                    ->map(fn($time_period) => $time_period->shiftTimezone($this->timezone))
+                    ->map(fn ($time_period) => $time_period->shiftTimezone($this->timezone))
                     ->toArray();
             })
             ->toArray();
@@ -51,12 +47,13 @@ trait CanComposeSLASchedules
         return $this;
     }
 
-    public function from(string $from): self
+    public static function from(string $from): self
     {
-        $this->everyDay(); // Default to Every Day
-        $this->temporary_from_value = $from;
+        $self = new self();
+        $self->everyDay(); // Default to Every Day
+        $self->temporary_from_value = $from;
 
-        return $this;
+        return $self;
     }
 
     public function andFrom(string $from): self

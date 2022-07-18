@@ -12,18 +12,21 @@ class SLA
 {
     /**
      * A schedule is a Day and Time combination
+     *
      * @var SLASchedule[]
      */
     public array $schedules = [];
 
     /**
      * Breaches are a simple duration after which the SLA is breached
+     *
      * @var SLABreach[]
      */
     private array $breach_definitions = [];
 
     /**
-     * @param SLASchedule $schedule
+     * @param  SLASchedule  $schedule
+     *
      * @throws ReflectionException
      */
     public function __construct(SLASchedule $schedule)
@@ -38,7 +41,10 @@ class SLA
         $this->schedules[] = $definition;
     }
 
-    public static function fromSchedule(SLASchedule $definition)
+    /**
+     * @throws ReflectionException
+     */
+    public static function fromSchedule(SLASchedule $definition): SLA
     {
         return new self($definition);
     }
@@ -64,59 +70,44 @@ class SLA
             ->addFilter(fn (Carbon $date) => $this->filter_out_excluded_dates($date));
 
         // Iterate over the period
-        /** @var CarbonInterval $intervals */
-        $intervals = $current_full_duration->map(function (CarbonPeriod $daily_subject_period) use ($end_date_time, $subject_start_time) {
+        /** @var CarbonInterval $interval */
+        $interval = collect($current_full_duration)->map(function (CarbonPeriod $daily_subject_period) {
+            /**
+             * Grab the enabled schedule, compare this every day to see if we now have a superseded schedule
+             */
             /** @var SLASchedule $enabled_schedule */
             $enabled_schedule = collect($this->schedules)
-                ->filter(function($schedule) {
+                ->filter(function ($schedule) {
                     return true; // TODO Filter out based on `effective_date`
                 })
                 ->last();
 
-            $overlapped_collection = $daily_subject_period->overlapAny(
-                collect($enabled_schedule->agendas)->flatMap(function(SLAAgenda $agenda) use ($daily_subject_period) {
+            /**
+             * Grab all the overlapping periods from our daily agenda
+             */
+            $valid_periods_of_sla = $daily_subject_period->overlapAny(
+                collect($enabled_schedule->agendas)->flatMap(function (SLAAgenda $agenda) use ($daily_subject_period) {
                     return $agenda->getPeriodsForDay($daily_subject_period->start->dayName);
                 })->toArray()
             );
 
-            return CarbonInterval::seconds(collect($overlapped_collection)->reduce(function($carried_seconds, CarbonPeriod $overlap) {
-                return $carried_seconds + $overlap->interval->totalSeconds;
-            }, 0))->cascade();
-        });
+            return CarbonInterval::seconds(
+                collect($valid_periods_of_sla)
+                    ->reduce(
+                        function (CarbonInterval $carried_interval, CarbonPeriod $overlap) {
+                            return $carried_interval->add($overlap->interval)->cascade();
+                        },
+                        CarbonInterval::seconds(0)
+                    )
+            );
+        })->reduce(
+            function (CarbonInterval $carried_interval, CarbonPeriod $overlap) {
+                return $carried_interval->add($overlap->interval)->cascade();
+            },
+            CarbonInterval::seconds(0)
+        )->cascade();
 
-        return new SLAStatus([/* Breaches */], $intervals);
-    }
-
-    /**
-     * @param CarbonPeriod $subject_period
-     * @param CarbonPeriod|array ...$sla_periods
-     * @return CarbonPeriod[]
-     */
-    public static function get_sla_coverage(CarbonPeriod $subject_period, ...$sla_periods): array
-    {
-        /**
-         * Here we want to provide back an array of all times the $subject_period has hit across
-         * one of the $sla_periods. This is best used per day, but I guess could be used over a longer duration.
-         *
-         * A          [========]
-         * B                      [==]
-         * C                           [========]
-         * SUBJECT         [==============]
-         * OVERLAP         [===]  [==] [==]
-         */
-
-        /** @var $sla_periods */
-        return collect($sla_periods)
-            ->
-            ->toArray();
-    }
-
-    public static function get_combined_area(CarbonPeriod $first, CarbonPeriod $second): CarbonPeriod
-    {
-        return new CarbonPeriod(
-            min($first->start, $second->start),
-            max($first->end, $second->end)
-        );
+        return new SLAStatus([/* Breaches */], collect()->map->combine->all());
     }
 
     /**
@@ -152,17 +143,5 @@ class SLA
     private function filter_out_excluded_dates(Carbon $date): bool
     {
         return true;
-//        foreach ($this->schedules as $schedule) {
-//
-//            // TODO add a start validity here
-//
-//            foreach ($schedule->days_of_the_week as $day) {
-//                if ($date->is($day)) {
-//                    return true;
-//                }
-//            }
-//        }
-//
-//        return false;
     }
 }

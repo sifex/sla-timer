@@ -28,7 +28,7 @@ class SLAAgenda
     public function addTimePeriods(array $periods): SLAAgenda
     {
         foreach ($periods as $period) {
-            $this->addTimePeriod($period[0],$period[1]);
+            $this->addTimePeriod($period[0], $period[1]);
         }
 
         return $this;
@@ -54,7 +54,7 @@ class SLAAgenda
      */
     public function toPeriods(): array
     {
-        return collect($this->time_periods)->flatMap(function(CarbonPeriod $time_period) {
+        return collect($this->time_periods)->flatMap(function (CarbonPeriod $time_period) {
             return collect($this->days)->map(function ($day_name) use ($time_period) {
                 return CarbonPeriod::create([
                     Carbon::now()->setTimeFrom($time_period->start),
@@ -65,12 +65,12 @@ class SLAAgenda
     }
 
     /**
-     * @param string $day
+     * @param  string  $day
      * @return CarbonPeriod
      */
     public function getPeriodsForDay(string $day): CarbonPeriod
     {
-        return collect($this->toPeriods())->filter(function(CarbonPeriod $period) use ($day) {
+        return collect($this->toPeriods())->filter(function (CarbonPeriod $period) use ($day) {
             return $period->start->is($day);
         })->first();
     }
