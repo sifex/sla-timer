@@ -70,8 +70,12 @@ class SLA
             ->addFilter(fn (Carbon $date) => $this->filter_out_excluded_dates($date));
 
         // Iterate over the period
-        /** @var CarbonInterval $interval */
-        $interval = collect($current_full_duration)->map(function (CarbonPeriod $daily_subject_period) {
+        $interval = collect($current_full_duration)->map(function (Carbon $daily_subject_period) {
+            $daily_period = CarbonPeriod::create(
+                $daily_subject_period,
+                $daily_subject_period->clone()->addHours(24)->subSeconds(1)
+            );
+
             /**
              * Grab the enabled schedule, compare this every day to see if we now have a superseded schedule
              */
@@ -85,29 +89,33 @@ class SLA
             /**
              * Grab all the overlapping periods from our daily agenda
              */
-            $valid_periods_of_sla = $daily_subject_period->overlapAny(
-                collect($enabled_schedule->agendas)->flatMap(function (SLAAgenda $agenda) use ($daily_subject_period) {
-                    return $agenda->getPeriodsForDay($daily_subject_period->start->dayName);
-                })->toArray()
+            /** @var CarbonPeriod[] $valid_periods_of_sla */
+            $valid_periods_of_sla = $daily_period->overlapAny(
+                collect($enabled_schedule->agendas)->flatMap(function (SLAAgenda $agenda) use ($daily_period) {
+                    return $agenda->getPeriodsForDay($daily_period->start->dayName);
+                })->whereNotNull()->toArray()
             );
 
-            return CarbonInterval::seconds(
-                collect($valid_periods_of_sla)
-                    ->reduce(
-                        function (CarbonInterval $carried_interval, CarbonPeriod $overlap) {
-                            return $carried_interval->add($overlap->interval)->cascade();
-                        },
-                        CarbonInterval::seconds(0)
+            $intervals = collect($valid_periods_of_sla)->map(function (CarbonPeriod $carbonPeriod) {
+                return $carbonPeriod->interval;
+            })->toArray();
+
+            return self::collapse_carbon_intervals($intervals);
+        })->toArray();
+
+        return new SLAStatus([/* Breaches */], self::collapse_carbon_intervals($interval));
+    }
+
+    private static function collapse_carbon_intervals(array $intervals): CarbonInterval
+    {
+        return collect($intervals)
+            ->reduce(function (CarbonInterval $i, CarbonPeriod $overlapping_period) {
+                return $i->add(
+                    CarbonInterval::seconds(
+                        $overlapping_period->start->diffInSeconds($overlapping_period->end)
                     )
-            );
-        })->reduce(
-            function (CarbonInterval $carried_interval, CarbonPeriod $overlap) {
-                return $carried_interval->add($overlap->interval)->cascade();
-            },
-            CarbonInterval::seconds(0)
-        )->cascade();
-
-        return new SLAStatus([/* Breaches */], collect()->map->combine->all());
+                );
+            }, CarbonInterval::seconds(0))
     }
 
     /**
