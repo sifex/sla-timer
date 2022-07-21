@@ -56,16 +56,13 @@ class SLAAgenda
     {
         return collect($this->days)
             ->flatMap(function ($day_name) {
-
                 return collect($this->time_periods)
                     ->mapSpread(function ($start_time, $end_time) use ($day_name) {
                         return CarbonPeriod::create(
                             Carbon::parse($day_name)->setTimeFrom($start_time),
                             Carbon::parse($day_name)->setTimeFrom($end_time)
-                        )->setDateInterval(CarbonInterval::week());
+                        )->setDateInterval(CarbonInterval::seconds());
                     });
-
-
             })->toArray();
     }
 

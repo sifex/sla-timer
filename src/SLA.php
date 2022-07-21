@@ -36,6 +36,11 @@ class SLA
         $this->addSchedule($schedule);
     }
 
+    public function addBreach(SLABreach $breach)
+    {
+        $this->breach_definitions[] = $breach;
+    }
+
     public function addSchedule(SLASchedule $definition)
     {
         $this->schedules[] = $definition;
@@ -65,8 +70,7 @@ class SLA
 
         // Grab every day between the two dates
         $current_full_duration = CarbonPeriod::create($subject_start_time, $end_date_time)
-            ->setDateInterval(CarbonInterval::day(1))
-            ->addFilter(fn (Carbon $date) => $this->filter_in_days_of_week_in_schedule($date))
+            ->setDateInterval(CarbonInterval::seconds(1))
             ->addFilter(fn (Carbon $date) => $this->filter_out_excluded_dates($date));
 
         // Iterate over the period
@@ -74,7 +78,7 @@ class SLA
             $daily_period = CarbonPeriod::create(
                 $daily_subject_period,
                 $daily_subject_period->clone()->addHours(24)->subSeconds(1)
-            );
+            )->setDateInterval(CarbonInterval::seconds());
 
             /**
              * Grab the enabled schedule, compare this every day to see if we now have a superseded schedule
@@ -89,13 +93,11 @@ class SLA
             /**
              * Grab all the overlapping periods from our daily agenda
              */
-            /** @var CarbonPeriod[] $valid_periods_of_sla */
             $valid_periods_of_sla = $daily_period->overlapAny(
-                collect($enabled_schedule->agendas)->flatMap(function (SLAAgenda $agenda) use ($daily_period) {
-                    return $agenda->getPeriodsForDay($daily_period->start->dayName);
-                })->whereNotNull()->toArray()
+                collect($enabled_schedule->agendas)->flatMap(fn($a) => $a->toPeriods())->toArray()
             );
 
+            /** @var CarbonInterval[] $intervals */
             $intervals = collect($valid_periods_of_sla)->map(function (CarbonPeriod $carbonPeriod) {
                 return $carbonPeriod->interval;
             })->toArray();
@@ -103,19 +105,21 @@ class SLA
             return self::collapse_carbon_intervals($intervals);
         })->toArray();
 
-        return new SLAStatus([/* Breaches */], self::collapse_carbon_intervals($interval));
+        $interval = self::collapse_carbon_intervals($interval);
+
+        return new SLAStatus(
+            collect($this->breach_definitions)->each(fn($b) => $b->test($interval))->toArray(),
+            $interval
+        );
     }
 
     private static function collapse_carbon_intervals(array $intervals): CarbonInterval
     {
         return collect($intervals)
-            ->reduce(function (CarbonInterval $i, CarbonPeriod $overlapping_period) {
-                return $i->add(
-                    CarbonInterval::seconds(
-                        $overlapping_period->start->diffInSeconds($overlapping_period->end)
-                    )
-                );
+            ->reduce(function (CarbonInterval $i, CarbonInterval $overlapping_period) {
+                return $i->add($overlapping_period);
             }, CarbonInterval::seconds(0))
+            ->cascade();
     }
 
     /**
@@ -131,11 +135,7 @@ class SLA
             // TODO add a start validity here
 
             foreach ($schedule->agendas as $agenda) {
-                foreach ($agenda->days as $day_name) {
-                    if ($date->is($day_name)) {
-                        return true;
-                    }
-                }
+                return !!count($agenda->getPeriodsForDay($date->dayName));
             }
         }
 
