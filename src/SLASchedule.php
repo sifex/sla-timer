@@ -4,8 +4,8 @@ namespace Sifex\SlaTimer;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Sifex\SlaTimer\Traits\CanComposeSLASchedules;
-use Sifex\SlaTimer\Traits\HasTimezone;
+use Sifex\SlaTimer\Trai\CanComposeSLASchedules;
+use Sifex\SlaTimer\Trai\HasTimezone;
 
 class SLASchedule
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sifex\SlaTimer\Traits;
+namespace Sifex\SlaTimer\Trai;
 
 use Carbon\CarbonPeriod;
 

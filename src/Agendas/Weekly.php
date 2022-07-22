@@ -5,7 +5,7 @@ namespace Sifex\SlaTimer\Agendas;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
-use Sifex\SlaTimer\Traits\IsAnAgenda;
+use Sifex\SlaTimer\Trai\IsAnAgenda;
 
 class Weekly implements IsAnAgenda
 {
