@@ -137,7 +137,6 @@ it('tests the SLA over certain other days', function () {
         ->and(expect($sla->startedAt('2022-07-21 08:59:00')->breaches[1]->breached)->toEqual(false));
 });
 
-
 it('tests the SLA with double declaration of SLAs', function () {
     $sla = SLA::fromSchedule(
         (new SLASchedule)->from('09:00:00')->to('17:00:00')->on('Thursday')
