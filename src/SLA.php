@@ -63,7 +63,7 @@ class SLA
         return new self($definition);
     }
 
-    public function startedAt($subject_start_time): SLAStatus
+    private function startedAt($subject_start_time): SLAStatus
     {
         $main_target_period = $this->get_current_duration(
             // When the SLA started
@@ -129,6 +129,25 @@ class SLA
             collect($this->breach_definitions)->each(fn ($b) => $b->check($interval))->toArray(),
             $interval
         );
+    }
+
+    public function status(string $started_at): SLAStatus
+    {
+        return $this->startedAt($started_at);
+    }
+
+    public function duration(string $started_at): CarbonInterval
+    {
+        return $this->startedAt($started_at)->interval;
+    }
+
+    /**
+     * @param string $started_at
+     * @return SLABreach[]
+     */
+    public function breaches(string $started_at): array
+    {
+        return $this->startedAt($started_at)->breaches;
     }
 
     /**
