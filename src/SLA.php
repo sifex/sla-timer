@@ -101,6 +101,7 @@ class SLA
                 ->flatMap(fn ($a) => $a->toPeriods($main_target_period))
                 ->toArray();
 
+
             if ($sla_periods) {
                 $sla_coverage_area = $daily_period->overlapAny(
                     $sla_periods

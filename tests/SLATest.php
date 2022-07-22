@@ -136,3 +136,19 @@ it('tests the SLA over certain other days', function () {
         ->and(expect($sla->startedAt('2022-07-21 08:59:00')->breaches[0]->breached)->toEqual(false))
         ->and(expect($sla->startedAt('2022-07-21 08:59:00')->breaches[1]->breached)->toEqual(false));
 });
+
+
+it('tests the SLA with double declaration of SLAs', function () {
+    $sla = SLA::fromSchedule(
+        (new SLASchedule)->from('09:00:00')->to('17:00:00')->on('Thursday')
+            ->and()->from('09:00:00')->to('17:00:00')->on('Thursday')
+    );
+
+    $sla->addBreaches(
+        new SLABreach('Time to First Response', '29s'),
+        new SLABreach('Time to Resolution', '31s'),
+    );
+
+    testTime()->freeze('2022-07-21 09:00:30');
+    expect($sla->startedAt('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(30);
+});
