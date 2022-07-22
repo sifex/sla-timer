@@ -31,11 +31,8 @@ jobs:
                 run: ./vendor/bin/pint -v --test
 
             -   name: Run tests
-                run: ./vendor/bin/pest -v --coverage-clover clover.xml
+                run: php ./vendor/bin/pest -v --coverage-clover clover.xml
 
             -   uses: php-actions/phpstan@v3
                 with:
                     path: src/
-
-            -   name: phpunit-coverage-badge
-                uses: timkrase/phpunit-coverage-badge@v1.2.0
