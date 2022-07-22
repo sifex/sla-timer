@@ -3,7 +3,6 @@ vendor
 coverage
 .php-cs-fixer.cache
 .phpunit.result.cache
-composer.lock
 .idea/
 clover.xml
 /docs/node_modules/
