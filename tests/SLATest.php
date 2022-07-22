@@ -110,8 +110,6 @@ it('tests the SLA over certain days', function () {
         (new SLASchedule)->from('09:00:00')->to('17:00:00')->on('Thursdays')
     );
 
-    var_dump($sla->schedules[0]->agendas[0]->toPeriods());
-
     $sla->addBreaches(
         new SLABreach('29s'),
         new SLABreach('31s'),
