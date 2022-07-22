@@ -17,4 +17,9 @@ class SLAStatus
         $this->breaches = $breaches;
         $this->interval = $interval;
     }
+
+    public function hasABreach(): bool
+    {
+        return collect($this->breaches)->contains(fn (SLABreach $b) => $b->breached);
+    }
 }

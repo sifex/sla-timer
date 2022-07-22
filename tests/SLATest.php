@@ -95,8 +95,8 @@ it('tests the SLA with breaches', function () {
     );
 
     $sla->addBreaches(
-        new SLABreach('29s'),
-        new SLABreach('31s'),
+        new SLABreach('Time to Resolution', '29s'),
+        new SLABreach('Time to Resolution', '31s'),
     );
 
     testTime()->freeze('2022-07-17 09:00:30');
@@ -111,8 +111,8 @@ it('tests the SLA over certain days', function () {
     );
 
     $sla->addBreaches(
-        new SLABreach('29s'),
-        new SLABreach('31s'),
+        new SLABreach('Time to Resolution', '29s'),
+        new SLABreach('Time to Resolution', '31s'),
     );
 
     testTime()->freeze('2022-07-21 09:00:30');

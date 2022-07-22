@@ -6,12 +6,15 @@ use Carbon\CarbonInterval;
 
 class SLABreach
 {
+    public string $name = 'Generic Breach';
+
     public CarbonInterval $breached_after;
 
     public bool $breached = false;
 
-    public function __construct($string_duration)
+    public function __construct(string $name, string $string_duration)
     {
+        $this->name = $name;
         $this->breached_after = CarbonInterval::fromString($string_duration);
     }
 

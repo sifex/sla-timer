@@ -36,14 +36,14 @@ class SLA
         $this->addSchedule($schedule);
     }
 
-    public function addBreach(SLABreach $breach)
+    public function addBreach(SLABreach $breach): SLA
     {
         $this->breach_definitions[] = $breach;
 
         return $this;
     }
 
-    public function addBreaches(...$breaches)
+    public function addBreaches(...$breaches): SLA
     {
         collect($breaches)->each(fn ($b) => $this->addBreach($b));
 
@@ -75,20 +75,18 @@ class SLA
         );
 
         // Iterate over the period
-        $main_target_period->forEach(function (Carbon $date) {
-            var_dump($date->toString());
-        });
-
         $interval = collect($main_target_period)->map(function (Carbon $daily_subject_period) use ($main_target_period) {
+            /**
+             * After we've divided each day, find where the start and end times are by min/max'ing them
+             */
             $start_of_day = max($main_target_period->start, $daily_subject_period);
             $end_of_day = min($main_target_period->end, $daily_subject_period->clone()->addHours(24)->subSecond());
 
             /**
-             * Create a 24 period
+             * Create a 24h period
              */
-            $daily_period = CarbonPeriod::create(
-                $start_of_day, $end_of_day
-            )->setDateInterval(CarbonInterval::seconds());
+            $daily_period = CarbonPeriod::create($start_of_day, $end_of_day)
+                ->setDateInterval(CarbonInterval::seconds());
 
             /**
              * Grab the enabled schedule, compare this every day to see if we now have a schedule that would
@@ -105,27 +103,46 @@ class SLA
                     ->toArray()
             );
 
+            /**
+             * Get the interval of each overlapping period and place it into an array of intervals
+             */
             /** @var CarbonInterval[] $intervals */
             $intervals = collect($valid_periods_of_sla)
                 ->map(fn (CarbonPeriod $carbonPeriod): CarbonInterval => self::calculate_interval($carbonPeriod))
                 ->toArray();
 
             return self::combine_intervals($intervals);
-        })->reduce(fn ($carry, $i) => self::combine_intervals([$carry, $i]), CarbonInterval::seconds(0));
+
+            /**
+             * Then combine all intervals
+             */
+        })->pipe(fn ($c) => self::combine_intervals($c->toArray()));
 
         return new SLAStatus(
-            collect($this->breach_definitions)->each->check($interval)->toArray(),
+            collect($this->breach_definitions)->each(fn ($b) => $b->check($interval))->toArray(),
             $interval
         );
     }
 
+    /**
+     * Gets the current subject duration, sets the interval to 1d and filters out anything we don't want
+     *
+     * @param $subject_start_time
+     * @param $end_date_time
+     * @return CarbonPeriod
+     */
     private function get_current_duration($subject_start_time, $end_date_time): CarbonPeriod
     {
         return CarbonPeriod::create($subject_start_time, $end_date_time)
             ->setDateInterval(CarbonInterval::day(1))
-            ->addFilter(fn (Carbon $date) => $this->filter_out_excluded_dates($date));
+            ->addFilter(fn (Carbon $date) => self::filter_out_excluded_dates($date));
     }
 
+    /**
+     * Gets the enabled schedule for any given day
+     *
+     * @return SLASchedule
+     */
     private function get_enabled_schedule_for_day(): SLASchedule
     {
         return collect($this->schedules)
@@ -135,11 +152,23 @@ class SLA
             ->last();
     }
 
+    /**
+     * Turns a single period into an interval
+     *
+     * @param $period
+     * @return CarbonInterval
+     */
     private static function calculate_interval($period): CarbonInterval
     {
         return CarbonInterval::seconds($period->end->unix() - $period->start->unix());
     }
 
+    /**
+     * Combines two different intervals
+     *
+     * @param  array  $intervals
+     * @return CarbonInterval
+     */
     private static function combine_intervals(array $intervals): CarbonInterval
     {
         return collect($intervals)
@@ -175,7 +204,7 @@ class SLA
      * @param  Carbon  $date
      * @return bool
      */
-    private function filter_out_excluded_dates(Carbon $date): bool
+    private static function filter_out_excluded_dates(Carbon $date): bool
     {
         return true;
     }
