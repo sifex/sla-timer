@@ -2,6 +2,8 @@
 
 namespace Sifex\SlaTimer\Exceptions;
 
-class SLAException extends \Exception
+use Exception;
+
+class SLAException extends Exception
 {
 }

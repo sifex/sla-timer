@@ -25,7 +25,7 @@ composer require sifex/sla-timer
  * Create a new SLA between 9am and 5:30pm weekdays
  */
 $sla = new SLA(
-    SLASchedule::from('09:00:00')->to('17:30:00')->onWeekdays()
+    (new SLASchedule)->from('09:00:00')->to('17:30:00')->onWeekdays()
             ->andFrom('10:30:00')->to('17:30:00')->onWeekends()
             ->andFrom('17:30:00')->to('23:00:00')->on('Monday')
             ->andFrom('17:30:00')->to('10:00:00')->on(['Tuesday', 'Saturday'])

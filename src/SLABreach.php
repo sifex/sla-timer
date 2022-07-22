@@ -2,7 +2,6 @@
 
 namespace Sifex\SlaTimer;
 
-use Carbon\Carbon;
 use Carbon\CarbonInterval;
 
 class SLABreach
@@ -16,7 +15,7 @@ class SLABreach
         $this->breached_after = CarbonInterval::fromString($string_duration);
     }
 
-    public function test(CarbonInterval $current_interval)
+    public function check(CarbonInterval $current_interval)
     {
         $this->breached = $current_interval->cascade()->totalSeconds > $this->breached_after->cascade()->totalSeconds;
     }

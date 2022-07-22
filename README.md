@@ -37,7 +37,7 @@ To create a new SLA between 9am and 5:30pm weekdays, use the following
 ```php
 
 $sla = new SLA(
-    SLASchedule::from('09:00:00')->to('17:30:00')
+    (new SLASchedule)->from('09:00:00')->to('17:30:00')
             ->onWeekdays()
             ->except(['25 Dec 2022'])
 )->addBreaches([
@@ -56,7 +56,7 @@ $status->breaches // SLABreach('first_response');
  * Create a new SLA between 9am and 5:30pm weekdays
  */
 $sla = new SLA(
-    SLASchedule::from('09:00:00')->to('17:30:00')->onWeekdays()
+    (new SLASchedule)->from('09:00:00')->to('17:30:00')->onWeekdays()
             ->andFrom('10:30:00')->to('17:30:00')->onWeekends()
             ->andFrom('17:30:00')->to('23:00:00')->on('Monday')
             ->andFrom('17:30:00')->to('10:00:00')->on(['Tuesday', 'Saturday'])
@@ -74,7 +74,7 @@ $sla->duration('11-July-22 08:59:00')->totalSeconds = 12345;
  * Create a new SLA between 9am and 5:30pm weekdays
  */
 $sla = new SLA(
-    SLASchedule::from('09:00:00')->to('17:30:00')->onWeekdays()
+    (new SLASchedule)->from('09:00:00')->to('17:30:00')->onWeekdays()
             ->andFrom('10:30:00')->to('17:30:00')->onWeekends()
             ->andFrom('17:30:00')->to('23:00:00')->on('Monday')
             ->andFrom('17:30:00')->to('10:00:00')->on(['Tuesday', 'Saturday'])

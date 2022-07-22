@@ -2,63 +2,44 @@
 
 namespace Sifex\SlaTimer\Traits;
 
-use Sifex\SlaTimer\Exceptions\SLAException;
-use Sifex\SlaTimer\SLAAgenda;
+use Sifex\SlaTimer\Agendas\Weekly;
 use Sifex\SlaTimer\SLASchedule;
 
 trait CanComposeSLASchedules
 {
-    private string $temporary_from_value = '';
+    private int $agenda_index = 0;
 
-    /** @var SLAAgenda[] */
+    /** @var IsAnAgenda[] */
     public array $agendas = [
 
     ];
 
-    private int $currently_attending = 0;
-
-    private function get_current_period(): SLAAgenda
+    private function get_current_agenda(): IsAnAgenda
     {
         // Get the existing one at that index or create a brand-new period
-        return array_key_exists($this->currently_attending, $this->agendas)
-            ? $this->agendas[$this->currently_attending]
-            : $this->agendas[] = new SLAAgenda();
-    }
-
-    /**
-     * @return SLAAgenda[]
-     */
-    public function get_normalised_periods(): array
-    {
-        // Timezone shifts for each time period
-        $this->agendas = collect($this->agendas)
-            ->each(function (SLAAgenda $agenda) {
-                $agenda->time_periods = collect($agenda->time_periods)
-                    ->map(fn ($time_period) => $time_period->shiftTimezone($this->timezone))
-                    ->toArray();
-            })
-            ->toArray();
+        return array_key_exists($this->agenda_index, $this->agendas)
+            ? $this->agendas[$this->agenda_index]
+            : $this->agendas[] = new Weekly();
     }
 
     public function and(): self
     {
-        $this->currently_attending++;
+        $this->agenda_index = $this->agenda_index + 1;
 
         return $this;
     }
 
-    public static function from(string $from): self
+    public function from(string $from): self
     {
-        $self = new self();
-        $self->everyDay(); // Default to Every Day
-        $self->temporary_from_value = $from;
+        $this->everyDay(); // Default to Every Day
+        $this->temporary_from_value = $from;
 
-        return $self;
+        return $this;
     }
 
     public function andFrom(string $from): self
     {
-        $this->currently_attending++;
+        $this->agenda_index = $this->agenda_index + 1;
 
         return $this->from($from);
     }
@@ -69,7 +50,7 @@ trait CanComposeSLASchedules
 //            throw new SLAException('You haven\'t set a from value');
         }
 
-        $this->get_current_period()->addTimePeriod(
+        $this->get_current_agenda()->addTimePeriod(
             $this->temporary_from_value, $to
         );
 
@@ -79,8 +60,6 @@ trait CanComposeSLASchedules
     /**
      * @param  string|array  $days
      * @return SLASchedule|CanComposeSLASchedules
-     *
-     * @throws SLAException
      */
     public function on($days): self
     {
@@ -88,14 +67,11 @@ trait CanComposeSLASchedules
             $days = [$days];
         }
 
-        $this->get_current_period()->setDays($days);
+        $this->get_current_agenda()->setDays($days);
 
         return $this;
     }
 
-    /**
-     * @throws SLAException
-     */
     public function onWeekdays(): self
     {
         return $this->on([
@@ -107,9 +83,6 @@ trait CanComposeSLASchedules
         ]);
     }
 
-    /**
-     * @throws SLAException
-     */
     public function everyDay(): self
     {
         return $this->on([
@@ -123,9 +96,6 @@ trait CanComposeSLASchedules
         ]);
     }
 
-    /**
-     * @throws SLAException
-     */
     public function onWeekends(): self
     {
         return $this->on([
