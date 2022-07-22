@@ -97,17 +97,23 @@ class SLA
             /**
              * Grab all the overlapping periods from our daily agenda
              */
-            $valid_periods_of_sla = $daily_period->overlapAny(
-                collect($enabled_schedule->agendas)
-                    ->flatMap(fn ($a) => $a->toPeriods($main_target_period))
-                    ->toArray()
-            );
+            $sla_periods = collect($enabled_schedule->agendas)
+                ->flatMap(fn ($a) => $a->toPeriods($main_target_period))
+                ->toArray();
+
+            if ($sla_periods) {
+                $sla_coverage_area = $daily_period->overlapAny(
+                    $sla_periods
+                );
+            } else {
+                $sla_coverage_area = [];
+            }
 
             /**
              * Get the interval of each overlapping period and place it into an array of intervals
              */
             /** @var CarbonInterval[] $intervals */
-            $intervals = collect($valid_periods_of_sla)
+            $intervals = collect($sla_coverage_area)
                 ->map(fn (CarbonPeriod $carbonPeriod): CarbonInterval => self::calculate_interval($carbonPeriod))
                 ->toArray();
 

@@ -64,14 +64,19 @@ class Weekly implements IsAnAgenda
 
         $new_period = CarbonPeriod::start($start_date)->end($end_date)->setDateInterval(CarbonInterval::day());
 
-        return collect($new_period)->flatMap(function (Carbon $day) {
-            return collect($this->time_periods)->map(function (array $t) use ($day) {
-                return CarbonPeriod::create(
-                    $day->clone()->setTimeFromTimeString($t[0]),
-                    '1 second',
-                    $day->clone()->setTimeFromTimeString($t[1]),
-                );
-            });
-        })->toArray();
+        return collect($new_period)
+            ->filter(function (Carbon $day) {
+                return collect($this->days)->contains($day->dayName);
+            })
+            ->flatMap(function (Carbon $day) {
+                return collect($this->time_periods)
+                ->map(function (array $t) use ($day) {
+                    return CarbonPeriod::create(
+                        $day->clone()->setTimeFromTimeString($t[0]),
+                        '1 second',
+                        $day->clone()->setTimeFromTimeString($t[1]),
+                    );
+                });
+            })->toArray();
     }
 }

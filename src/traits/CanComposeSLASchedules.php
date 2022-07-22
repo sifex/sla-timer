@@ -14,6 +14,8 @@ trait CanComposeSLASchedules
 
     ];
 
+    private string $temporary_from_value;
+
     private function get_current_agenda(): IsAnAgenda
     {
         // Get the existing one at that index or create a brand-new period
