@@ -73,7 +73,7 @@ This repository came together after I set myself the challenge to write the proo
 ## Credits
 
 -   [Alex](https://github.com/sifex)
--   [All Contributors](../../contributors)
+-   [All Contributors](https://github.com/sifex/sla-timer/contributors)
 
 ## License
 

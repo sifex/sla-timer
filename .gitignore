@@ -6,3 +6,5 @@ coverage
 .idea/
 clover.xml
 /docs/node_modules/
+
+node_modules/
