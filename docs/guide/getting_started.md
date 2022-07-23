@@ -66,6 +66,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Frequently Asked Questions
 
+> Why only support PHP 8.0+?
 ## About
 
 This repository came together after I set myself the challenge to write the proof-of-concept in under 2 hours. After realising the concept of _time_ is one hell of a beast to tackle (especially timezones, [see Tom Scott's video on time-zones](https://www.youtube.com/watch?v=-5wpm-gesOY) for more information), I will end up finishing it in under 48h.

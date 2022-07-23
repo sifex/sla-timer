@@ -102,6 +102,7 @@ class SLA
                 ->toArray();
 
             if ($sla_periods) {
+                /** @var CarbonPeriod[] $sla_coverage_area */
                 $sla_coverage_area = $daily_period->overlapAny(
                     $sla_periods
                 );
