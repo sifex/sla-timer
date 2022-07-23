@@ -24,6 +24,11 @@ trait CanComposeSLASchedules
             : $this->agendas[] = new Weekly();
     }
 
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function and(): self
     {
         $this->agenda_index = $this->agenda_index + 1;

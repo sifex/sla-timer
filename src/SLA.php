@@ -7,6 +7,9 @@ use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
 use Cmixin\EnhancedPeriod;
 use ReflectionException;
+use Sifex\SlaTimer\Agendas\Weekly;
+use Sifex\SlaTimer\Trai\IsAnAgenda;
+use Spatie\Period\Visualizer;
 
 class SLA
 {
@@ -45,7 +48,7 @@ class SLA
 
     public function addBreaches(...$breaches): SLA
     {
-        collect($breaches)->each(fn ($b) => $this->addBreach($b));
+        collect($breaches)->flatten()->each(fn ($b) => $this->addBreach($b));
 
         return $this;
     }
@@ -55,9 +58,6 @@ class SLA
         $this->schedules[] = $definition;
     }
 
-    /**
-     * @throws ReflectionException
-     */
     public static function fromSchedule(SLASchedule $definition): SLA
     {
         return new self($definition);
@@ -79,8 +79,8 @@ class SLA
             /**
              * After we've divided each day, find where the start and end times are by min/max'ing them
              */
-            $start_of_day = max($main_target_period->start, $daily_subject_period);
-            $end_of_day = min($main_target_period->end, $daily_subject_period->clone()->addHours(24)->subSecond());
+            $start_of_day = max($main_target_period->start->clone(), $daily_subject_period->clone());
+            $end_of_day = min($main_target_period->end->clone(), $daily_subject_period->clone()->addHours(24)->subSecond());
 
             /**
              * Create a 24h period
@@ -95,16 +95,22 @@ class SLA
             $enabled_schedule = $this->get_enabled_schedule_for_day();
 
             /**
-             * Grab all the overlapping periods from our daily agenda
+             * Deduplicate our SLA Periods
+             * Why do this here? Mostly because of superseded schedules...
              */
             $sla_periods = collect($enabled_schedule->agendas)
-                ->flatMap(fn ($a) => $a->toPeriods($main_target_period))
-                ->toArray();
+                ->flatMap(fn (IsAnAgenda $a) => $a->toPeriods($main_target_period))
+                ->reduce(function ($carry, CarbonPeriod $p) {
+                    return count($carry) ? [...$p->diff(...$carry), ...$carry] : [$p];
+                }, []);
 
+
+            /**
+             * Grab all the overlapping periods from our daily agenda
+             */
             if ($sla_periods) {
-                /** @var CarbonPeriod[] $sla_coverage_area */
                 $sla_coverage_area = $daily_period->overlapAny(
-                    $sla_periods
+                    ...$sla_periods
                 );
             } else {
                 $sla_coverage_area = [];
@@ -126,7 +132,10 @@ class SLA
         })->pipe(fn ($c) => self::combine_intervals($c->toArray()));
 
         return new SLAStatus(
-            collect($this->breach_definitions)->each(fn ($b) => $b->check($interval))->toArray(),
+            collect($this->breach_definitions)
+                ->each(fn (SLABreach $b) => $b->check($interval))
+                ->filter(fn (SLABreach $b) => $b->breached)
+                ->toArray(),
             $interval
         );
     }

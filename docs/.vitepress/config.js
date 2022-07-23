@@ -8,12 +8,11 @@ export default {
             { text: 'Guide', link: '/guide/introduction' },
         ],
         logo: '/images/small_logo.svg',
-        outlineTitle: 'In hac pagina',
         sidebar: [
             {
                 text: 'Guide',
                 items: [
-                    { text: 'Introduction', link: '/guide/introduction' },
+                    { text: 'About SLAs', link: '/guide/about' },
                     { text: 'Getting Started', link: '/guide/getting_started' },
                     { text: 'Holidays & Skipped Days', link: '/guide/holidays' },
                 ]

@@ -3,7 +3,7 @@
 # Getting Started
 
 ::: danger
-This package is currently under construction!
+⚠️ This package is currently under construction! ⚠️
 :::
 
 To get started with `sla-timer`, simply install it through composer. 

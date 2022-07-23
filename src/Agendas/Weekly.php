@@ -22,9 +22,9 @@ class Weekly implements IsAnAgenda
         return $this;
     }
 
-    public function addTimePeriods(array $periods): Weekly
+    public function addTimePeriods(...$periods): Weekly
     {
-        collect($periods)->each(function ($period) {
+        collect($periods)->flatten()->each(function ($period) {
             $this->addTimePeriod($period[0], $period[1]);
         });
 
