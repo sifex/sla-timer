@@ -67,6 +67,9 @@ Please see [CONTRIBUTING](https://github.com/sifex/sla-timer/blob/main/CONTRIBUT
 ## Frequently Asked Questions
 
 > Why only support PHP 8.0+?
+> 
+This is mainly a limitation on `spatie/period` and some dev-only dependencies such as `laravel/pint`. If you're interested in this library being ported back to php@7.4, please let me know by [starting a discussion in the repository](https://github.com/sifex/sla-timer/discussions/new). 
+
 ## About
 
 This repository came together after I set myself the challenge to write the proof-of-concept in under 2 hours. After realising the concept of _time_ is one hell of a beast to tackle (especially timezones, [see Tom Scott's video on time-zones](https://www.youtube.com/watch?v=-5wpm-gesOY) for more information), I will end up finishing it in under 48h.
