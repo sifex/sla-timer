@@ -1,12 +1,13 @@
 <?php
 
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Cmixin\EnhancedPeriod;
 use Sifex\SlaTimer\SLASchedule;
 
-beforeEach(function () {
-    CarbonPeriod::mixin(EnhancedPeriod::class);
-});
+//beforeEach(function () {
+//    CarbonPeriod::mixin(EnhancedPeriod::class);
+//});
 
 /**
  * Daily Periods
@@ -24,3 +25,4 @@ it('tests the scheduler basic function', function () {
 
     expect(invade($schedule)->agendas)->toHaveCount(2);
 });
+

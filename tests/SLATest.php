@@ -28,7 +28,7 @@ it('tests the SLA across a short duration', function () {
     $subject_start_time = '2022-07-17 08:59:00';
     $time_now = '2022-07-17 09:00:30';
 
-    $sla = new SLA(
+    $sla = SLA::fromSchedule(
         SLASchedule::create()->from('09:00:00')->to('17:00:00')->everyDay()
     );
 
@@ -37,10 +37,10 @@ it('tests the SLA across a short duration', function () {
 });
 
 it('tests the SLA across a long duration', function () {
-    $subject_start_time = '2022-06-17 08:59:00';
+    $subject_start_time = '2021-04-17 08:59:00';
     $time_now = '2022-07-17 09:00:30';
 
-    $sla = new SLA(
+    $sla = SLA::fromSchedule(
         SLASchedule::create()->from('09:00:00')->to('17:00:00')->everyDay()
     );
 
@@ -52,7 +52,7 @@ it('tests the SLA with breaches', function () {
     $subject_start_time = '2022-07-17 08:59:00';
     $time_now = '2022-07-17 09:00:30';
 
-    $sla = new SLA(
+    $sla = SLA::fromSchedule(
         SLASchedule::create()->from('09:00:00')->to('17:00:00')->everyDay()
     );
 

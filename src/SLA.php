@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
 use Cmixin\EnhancedPeriod;
+use Illuminate\Support\Collection;
 use ReflectionException;
 use Sifex\SlaTimer\Trai\IsAnAgenda;
 
@@ -117,7 +118,7 @@ class SLA
              * After we've divided each day, find where the start and end times are by min/max'ing them
              */
             $start_of_day = max($main_target_period->start->clone(), $daily_subject_period->clone());
-            $end_of_day = min($main_target_period->end->clone(), $daily_subject_period->clone()->addHours(24)->subSecond());
+            $end_of_day = min($main_target_period->end->clone(), $daily_subject_period->clone()->addHours(24));
 
             /**
              * Create a 24h period
@@ -127,7 +128,7 @@ class SLA
 
             /**
              * Grab the enabled schedule, compare this every day to see if we now have a schedule that would
-             * supersede it.
+             * supersede it. // TODO
              */
             $enabled_schedule = $this->get_enabled_schedule_for_day();
 
@@ -140,18 +141,26 @@ class SLA
             }
 
             /**
-             * Grab all the overlapping periods from our daily agenda
+             * SLA Overlap
+             * This function has been optimised
              */
-            if ($sla_periods) {
-                $sla_coverage_area = $daily_period->overlapAny(
-                    ...$sla_periods
-                );
-            } else {
-                $sla_coverage_area = [];
-            }
+            $sla_coverage_periods = collect($sla_periods)
+                ->map(function(CarbonPeriod $sla_period) use ($daily_period) {
+                    $e = max($sla_period->start->unix(), $daily_period->start->unix());
+                    $f = min($sla_period->end->unix(), $daily_period->end->unix());
+
+                    if($e > $f) {
+                        return null;
+                    }
+                    return CarbonPeriod::create(
+                        Carbon::parse($e),
+                        Carbon::parse($f),
+                    )->setDateInterval(CarbonInterval::seconds());
+                })
+                ->whereNotNull();
 
             if ($this->pause_periods) {
-                $sla_coverage_area = collect($sla_coverage_area)->flatMap(function (CarbonPeriod $period) {
+                $sla_coverage_periods = collect($sla_coverage_periods)->flatMap(function (CarbonPeriod $period) {
                     $pause_periods = collect($this->pause_periods)->map(fn (SLAPause $pp) => $pp->toPeriod()->setDateInterval(CarbonInterval::seconds()))->toArray();
 
                     return $period->diff(...$pause_periods);
@@ -162,7 +171,7 @@ class SLA
              * Get the interval of each overlapping period and place it into an array of intervals
              */
             /** @var CarbonInterval[] $intervals */
-            $intervals = collect($sla_coverage_area)
+            $intervals = collect($sla_coverage_periods)
                 ->map(fn (CarbonPeriod $carbonPeriod): CarbonInterval => self::calculate_interval($carbonPeriod))
                 ->toArray();
 
@@ -186,9 +195,29 @@ class SLA
     {
         return collect($this->get_enabled_schedule_for_day()->agendas)
             ->flatMap(fn (IsAnAgenda $a) => $a->toPeriods($main_target_period))
-            ->reduce(function ($carry, CarbonPeriod $p) {
-                return count($carry) ? [...$p->diff(...$carry), ...$carry] : [$p];
-            }, []);
+            ->reduce(function(Collection $carry, CarbonPeriod $sla_period) {
+                [$overlapping_periods, $carry] = $carry->partition(function($existing_period) use ($sla_period) {
+                    $e = max($sla_period->start->unix(), $existing_period->start->unix());
+                    $f = min($sla_period->end->unix(), $existing_period->end->unix());
+
+                    if($e > $f) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+
+                if($overlapping_periods->count()) {
+                    return $carry->add(
+                        CarbonPeriod::create(
+                            collect($overlapping_periods)->add($sla_period)->map(fn(CarbonPeriod $p) => $p->start->unix())->max(),
+                            collect($overlapping_periods)->add($sla_period)->map(fn(CarbonPeriod $p) => $p->end->unix())->min(),
+                        )
+                    );
+                } else {
+                    return $carry->add($sla_period);
+                }
+            }, collect())->toArray();
     }
 
     public function status(string $started_at, string $stopped_at = null): SLAStatus

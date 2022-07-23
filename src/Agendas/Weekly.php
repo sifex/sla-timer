@@ -79,4 +79,10 @@ class Weekly implements IsAnAgenda
                 });
             })->toArray();
     }
+
+    public function getPeriods(CarbonPeriod $subject_period)
+    {
+
+
+    }
 }
