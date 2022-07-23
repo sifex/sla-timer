@@ -20,6 +20,8 @@ A PHP package for calculating & tracking the Service Level Agreement completion 
 <img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring.svg?" alt="Hi, I'm Alex & I'm currently looking for a Laravel job. Please reach out to me via twitter, or click this link." height="49">
 </a>
 
+![Basic SLA Format](https://github.com/sifex/sla-timer/raw/HEAD/docs/public/images/sla_basic_dark.svg#gh-dark-mode-only)
+![Basic SLA Format](https://github.com/sifex/sla-timer/raw/HEAD/docs/public/images/sla_basic_light.svg#gh-light-mode-only)
 
 ## Installation
 
