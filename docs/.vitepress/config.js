@@ -7,7 +7,7 @@ export default {
         nav: [
             { text: 'Guide', link: '/guide/introduction' }
         ],
-        logo: '/images/small_logo.svg',
+        logo: '/public/images/small_logo.svg',
         outlineTitle: 'In hac pagina',
         sidebar: [
             {
