@@ -36,6 +36,18 @@ it('tests the SLA across a short duration', function () {
     expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
 });
 
+it('tests the SLA across a long duration', function () {
+    $subject_start_time = '2022-06-17 08:59:00';
+    $time_now = '2022-07-17 09:00:30';
+
+    $sla = new SLA(
+        SLASchedule::create()->from('09:00:00')->to('17:00:00')->everyDay()
+    );
+
+    testTime()->freeze($time_now);
+    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(864030);
+});
+
 it('tests the SLA with breaches', function () {
     $subject_start_time = '2022-07-17 08:59:00';
     $time_now = '2022-07-17 09:00:30';
@@ -132,6 +144,24 @@ it('tests SLA pausing', function () {
 
     $sla->addPause('2022-07-21 09:00:00', '2022-07-21 09:00:19');
     expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(10);
+
+    $sla->clearPausePeriods();
+    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
+});
+
+it('tests SLA vacations', function () {
+    $subject_start_time = '2022-07-21 08:59:00';
+    $time_now = '2022-07-21 09:00:30';
+
+    $sla = SLA::fromSchedule(
+        SLASchedule::create()->from('09:00:00')->to('17:00:00')
+    );
+
+    testTime()->freeze($time_now);
+    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
+
+    $sla->addHoliday('2022-07-21');
+    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(0);
 
     $sla->clearPausePeriods();
     expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);

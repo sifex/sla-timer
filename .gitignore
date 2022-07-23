@@ -10,3 +10,7 @@ clover.xml
 node_modules/
 
 docs/.vitepress/dist/
+
+cachegrind.out.18991.gz
+
+*.gz

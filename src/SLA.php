@@ -109,8 +109,10 @@ class SLA
             $subject_stop_time ?? Carbon::now()
         );
 
+        $sla_periods = $this->recalculate_sla_periods($main_target_period);
+
         // Iterate over the period
-        $interval = collect($main_target_period)->map(function (Carbon $daily_subject_period) use ($main_target_period) {
+        $interval = collect($main_target_period)->map(function (Carbon $daily_subject_period) use ($main_target_period, $sla_periods) {
             /**
              * After we've divided each day, find where the start and end times are by min/max'ing them
              */
@@ -133,11 +135,9 @@ class SLA
              * Deduplicate our SLA Periods
              * Why do this here? Mostly because of superseded schedules...
              */
-            $sla_periods = collect($enabled_schedule->agendas)
-                ->flatMap(fn (IsAnAgenda $a) => $a->toPeriods($main_target_period))
-                ->reduce(function ($carry, CarbonPeriod $p) {
-                    return count($carry) ? [...$p->diff(...$carry), ...$carry] : [$p];
-                }, []);
+            if (false /* Our enabled schedule has changed today */) {
+                $sla_periods = $this->recalculate_sla_periods($main_target_period);
+            }
 
             /**
              * Grab all the overlapping periods from our daily agenda
@@ -180,6 +180,15 @@ class SLA
                 ->toArray(),
             $interval
         );
+    }
+
+    private function recalculate_sla_periods($main_target_period): array
+    {
+        return collect($this->get_enabled_schedule_for_day()->agendas)
+            ->flatMap(fn (IsAnAgenda $a) => $a->toPeriods($main_target_period))
+            ->reduce(function ($carry, CarbonPeriod $p) {
+                return count($carry) ? [...$p->diff(...$carry), ...$carry] : [$p];
+            }, []);
     }
 
     public function status(string $started_at, string $stopped_at = null): SLAStatus

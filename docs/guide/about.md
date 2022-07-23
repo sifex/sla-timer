@@ -15,14 +15,16 @@ Examples of some time-based SLAs you can measure are:
 
 ## 👾 How are SLAs calculated?
 
+The following shows an SLA for "Business Hours" (Ie. 9-5pm Monday through to Friday).
+
 <script setup>
 import { withBase } from 'vitepress';
 </script>
 
 
-<a :href="withBase('/images/sla_basic_light.svg')">
-    <img style="transform: scale(1.1)" :src="withBase('/images/sla_basic_dark.svg')" alt="SLA Basics" class="w-full my-20 hidden dark:block">
-    <img style="transform: scale(1.1)" :src="withBase('/images/sla_basic_light.svg')" alt="SLA Basics" class="w-full my-20 dark:hidden">
+<a :href="withBase('/images/sla_basic_light.svg')" class="lg:-mx-16 my-16 block">
+    <img :src="withBase('/images/sla_basic_dark.svg')" alt="SLA Basics" class="w-full hidden dark:block">
+    <img :src="withBase('/images/sla_basic_light.svg')" alt="SLA Basics" class="w-full dark:hidden">
 </a>
 
 ## How do I use `sla-timer`?

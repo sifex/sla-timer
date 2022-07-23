@@ -1,22 +1,20 @@
-
-
 # Getting Started
+
+## Installation
 
 ::: danger
 ⚠️ This package is currently under construction! ⚠️
 :::
-
-## Requirements
-
-- `php` - Version 8.0 or higher
-
-## Installation
 
 You can install the `sla-timer` via composer:
 
 ```bash
 composer require sifex/sla-timer
 ```
+
+### Requirements
+
+- `php` - Version 8.0 or higher
 
 ## Example Usage
 
@@ -83,4 +81,5 @@ $duration->forHumans(); // 35 min
 
 ## Setting up Pause Periods
 
-This is where things get a little backwards. In order to set up pause periods,  
+Pause periods & holidays operate very similarly. So set up either, head over to [Holidays & Skipped Days](/guide/holidays)
+
