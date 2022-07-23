@@ -62,7 +62,7 @@ composer test
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](https://github.com/sifex/sla-timer/blob/main/CONTRIBUTING.md) for details.
 
 ## Frequently Asked Questions
 
@@ -78,4 +78,4 @@ This repository came together after I set myself the challenge to write the proo
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/sifex/sla-timer/blob/main/LICENSE.md) for more information.
