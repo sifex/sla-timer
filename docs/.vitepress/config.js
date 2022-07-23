@@ -5,9 +5,9 @@ export default {
     lastUpdated: true,
     themeConfig: {
         nav: [
-            { text: 'Guide', link: '/guide/introduction' }
+            { text: 'Guide', link: '/guide/introduction' },
         ],
-        logo: '/public/images/small_logo.svg',
+        logo: '/images/small_logo.svg',
         outlineTitle: 'In hac pagina',
         sidebar: [
             {
@@ -16,6 +16,12 @@ export default {
                     { text: 'Introduction', link: '/guide/introduction' },
                     { text: 'Getting Started', link: '/guide/getting_started' },
                     { text: 'Holidays & Skipped Days', link: '/guide/holidays' },
+                ]
+            },
+            {
+                text: 'Integrations',
+                items: [
+                    { text: 'Laravel', link: '/integrations/laravel' },
                 ]
             }
         ],
