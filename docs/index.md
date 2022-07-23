@@ -17,7 +17,7 @@ hero:
       link: https://github.com/sifex/sla-timer
 features:
   - title: Daily & Per-Day Scheduling
-    details: SLA Timer makes it super easy to set those pesky 9 to 5's
+    details: SLA Timer makes it super easy to calculate 
   - title: Breaches
     details: Set multiple thresholds for when an SLA is breached
   - title: Holiday Time

@@ -2,6 +2,11 @@
 
 All notable changes to `sla-timer` will be documented in this file
 
-## 1.0.0 - 201X-XX-XX
+## v0.0.2-beta
 
-- initial release
+- Imported `spatie/period` to help with time overlap problems
+- Published documentation to GH Pages
+
+## v0.0.1-beta
+
+- Initial dev release
