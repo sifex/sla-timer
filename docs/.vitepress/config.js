@@ -1,6 +1,7 @@
 export default {
     title: 'SLA Timer',
-    description: 'Just playing around.',
+    base: '/sla-timer/',
+    description: 'A PHP package for calculating & tracking the Service Level Agreement completion timings.',
     lastUpdated: true,
     themeConfig: {
         nav: [
