@@ -86,7 +86,7 @@ it('tests the SLA across a short duration', function () {
     );
 
     testTime()->freeze('2022-07-17 09:00:30');
-    expect($sla->startedAt('2022-07-17 08:59:00')->interval->totalSeconds)->toEqual(30);
+    expect($sla->status('2022-07-17 08:59:00')->interval->totalSeconds)->toEqual(30);
 });
 
 it('tests the SLA with breaches', function () {
@@ -100,9 +100,9 @@ it('tests the SLA with breaches', function () {
     );
 
     testTime()->freeze('2022-07-17 09:00:30');
-    expect($sla->startedAt('2022-07-17 08:59:00')->interval->totalSeconds)->toEqual(30)
-        ->and(expect($sla->startedAt('2022-07-17 08:59:00')->breaches[0]->breached)->toEqual(true))
-        ->and(expect($sla->startedAt('2022-07-17 08:59:00')->breaches[1]->breached)->toEqual(false));
+    expect($sla->status('2022-07-17 08:59:00')->interval->totalSeconds)->toEqual(30)
+        ->and(expect($sla->status('2022-07-17 08:59:00')->breaches[0]->breached)->toEqual(true))
+        ->and(expect($sla->status('2022-07-17 08:59:00')->breaches[1]->breached)->toEqual(false));
 });
 
 it('tests the SLA over certain days', function () {
@@ -116,9 +116,9 @@ it('tests the SLA over certain days', function () {
     );
 
     testTime()->freeze('2022-07-21 09:00:30');
-    expect($sla->startedAt('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(30)
-        ->and(expect($sla->startedAt('2022-07-21 08:59:00')->breaches[0]->breached)->toEqual(true))
-        ->and(expect($sla->startedAt('2022-07-21 08:59:00')->breaches[1]->breached)->toEqual(false));
+    expect($sla->status('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(30)
+        ->and(expect($sla->status('2022-07-21 08:59:00')->breaches[0]->breached)->toEqual(true))
+        ->and(expect($sla->status('2022-07-21 08:59:00')->breaches[1]->breached)->toEqual(false));
 });
 
 it('tests the SLA over certain other days', function () {
@@ -132,9 +132,9 @@ it('tests the SLA over certain other days', function () {
     );
 
     testTime()->freeze('2022-07-21 09:00:30');
-    expect($sla->startedAt('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(0)
-        ->and(expect($sla->startedAt('2022-07-21 08:59:00')->breaches[0]->breached)->toEqual(false))
-        ->and(expect($sla->startedAt('2022-07-21 08:59:00')->breaches[1]->breached)->toEqual(false));
+    expect($sla->status('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(0)
+        ->and(expect($sla->status('2022-07-21 08:59:00')->breaches[0]->breached)->toEqual(false))
+        ->and(expect($sla->status('2022-07-21 08:59:00')->breaches[1]->breached)->toEqual(false));
 });
 
 it('tests the SLA with double declaration of SLAs', function () {
@@ -149,5 +149,5 @@ it('tests the SLA with double declaration of SLAs', function () {
     );
 
     testTime()->freeze('2022-07-21 09:00:30');
-    expect($sla->startedAt('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(30);
+    expect($sla->status('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(30);
 });
