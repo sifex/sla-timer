@@ -13,6 +13,20 @@ Examples of some time-based SLAs you can measure are:
 1. Respond to all requests within 2 hours.
 2. Resolve high-priority requests within 24 hours.
 
+## 👾 How are SLAs calculated?
+
+<script setup>
+import { withBase, useData } from 'vitepress';
+
+const { theme } = useData()
+</script>
+
+
+<a :href="withBase('/images/sla_basic_light.svg')">
+    <img :src="withBase('/images/sla_basic_dark.svg')" alt="SLA Basics" class="w-full my-20 hidden dark:block">
+    <img :src="withBase('/images/sla_basic_light.svg')" alt="SLA Basics" class="w-full my-20 dark:hidden">
+</a>
+
 ## How do I use `sla-timer`?
 
 🎉 Head on over to **[Getting Started](/guide/getting_started.md)** to see how you can use this library

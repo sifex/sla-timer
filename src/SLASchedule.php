@@ -19,4 +19,9 @@ class SLASchedule
 
     /** @var CarbonPeriod[] */
     public array $excluded_time_periods = [];
+
+    public function effectiveFrom(string $date): self
+    {
+        return $this;
+    }
 }

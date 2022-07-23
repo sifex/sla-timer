@@ -14,6 +14,7 @@ export default {
                 items: [
                     { text: 'About SLAs', link: '/guide/about' },
                     { text: 'Getting Started', link: '/guide/getting_started' },
+                    { text: 'Updating Schedules', link: '/guide/updating_schedules' },
                     { text: 'Holidays & Skipped Days', link: '/guide/holidays' },
                 ]
             },

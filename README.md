@@ -36,17 +36,21 @@ To create a new SLA between 9am and 5:30pm weekdays, use the following
 
 ```php
 
-$sla = new SLA(
-    (new SLASchedule)->from('09:00:00')->to('17:30:00')
-            ->onWeekdays()
-            ->except(['25 Dec 2022'])
-)->addBreaches([
-    SLABreach('first_response', '45m'),
-]);
+$sla = SLA::fromSchedule(
+        SLASchedule::create()->from('09:00:00')->to('17:30:00')->everyDay()
+    );
 
-$status = $sla->startedAt('11-July-22 08:59:00')->breaches // SLAStatus
-$status->breaches // SLABreach('first_response');
+    $sla->addBreaches([
+        new SLABreach('first_response', '45m'),
+        new SLABreach('resolution', '24h'),
+    ]);
 
+    testTime()->freeze('2022-07-21 09:46:00');
+    $status = $sla->status('2022-07-10 09:00:00'); // SLAStatus
+    expect($status->breaches)->toHaveCount(2); // SLABreach[]
+
+    $duration = $sla->duration('2022-07-21 08:59:00'); // CarbonInterval
+    $duration->forHumans();
 ```
 
 ### Complex & Multiple Schedules

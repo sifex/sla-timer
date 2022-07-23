@@ -12,9 +12,6 @@ hero:
     - theme: alt
       text: View on GitHub
       link: https://github.com/sifex/sla-timer
-    - theme: alt
-      text: 💶 Sponsor me on Github
-      link: https://github.com/sifex/sla-timer
 features:
   - title: Daily & Per-Day Scheduling
     details: SLA Timer makes it super easy to calculate 

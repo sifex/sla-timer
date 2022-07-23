@@ -1,7 +1,5 @@
 <?php
 
-use Carbon\CarbonPeriod;
-use Cmixin\EnhancedPeriod;
 use Sifex\SlaTimer\SLA;
 use Sifex\SlaTimer\SLABreach;
 use Sifex\SlaTimer\SLASchedule;
@@ -12,7 +10,7 @@ use function Spatie\PestPluginTestTime\testTime;
  */
 it('expects the scheduler to default to every day', function () {
     $sla = SLA::fromSchedule(
-        SLASchedule::create()->from('09:00:00')->to('17:30:00')->everyDay()
+        SLASchedule::create()->from('09:00:00')->to('17:30:00')->onWeekdays()
     );
 
     $sla->addBreaches([
@@ -26,5 +24,4 @@ it('expects the scheduler to default to every day', function () {
 
     $duration = $sla->duration('2022-07-21 08:59:00'); // CarbonInterval
     $duration->forHumans();
-
 });

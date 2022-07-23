@@ -26,70 +26,22 @@ it('collapses intervals', function () {
     expect($combined->totalSeconds)->toEqual(30 + (30 * 60) + 180);
 });
 
-it('ensures that spatie\'s lib works correctly', function () {
-    CarbonPeriod::mixin(EnhancedPeriod::class);
-
-    $period_one = CarbonPeriod::create('Thursday 09:00:00', '1 second', 'Thursday 17:30:00');
-    $period_two = CarbonPeriod::create('Friday 09:00:00', '1 second', 'Friday 17:30:00');
-
-    $combined = $period_one->overlapAny($period_two);
-    expect($combined)->toHaveCount(0);
-
-    $period_three = CarbonPeriod::create('Thursday 10:30:00', '1 second', 'Thursday 10:45:00');
-
-    $combined = $period_one->overlapAny($period_three);
-    expect($combined)->toHaveCount(1);
-});
-
-it('pretty much is the entire library in a single test', function () {
-    CarbonPeriod::mixin(EnhancedPeriod::class);
-    testTime()->freeze('2022-07-21 09:45:00'); // 21st = Thursday
-
-    $example_subject_period = CarbonPeriod::create('2022-07-21 09:00:00', '1 second', '2022-07-21 09:30:00');
-    $example_sla_period = CarbonPeriod::create('Thursday 09:00:00', '1 second', 'Thursday 17:30:00');
-
-    $combined = $example_subject_period->overlapAny($example_sla_period);
-    $interval = collect($combined)->reduce(
-        fn ($carry, $p) => CarbonInterval::seconds($p->end->unix() - $p->start->unix())->add($carry),
-        CarbonInterval::seconds(0)
-    );
-
-    expect($combined)
-        ->and($interval->totalSeconds)->toEqual(1800);
-});
-
-it('pretty much is the entire library in a single test over a longer duration ', function () {
-    CarbonPeriod::mixin(EnhancedPeriod::class);
-    testTime()->freeze('2022-07-21 09:45:00'); // 21st = Thursday
-
-    $example_subject_period = CarbonPeriod::create('2022-07-21 09:00:00', '1 second', '2022-07-21 09:30:00');
-    $example_sla_schedule = (new SLASchedule)->from('09:00')->to('17:30')->everyDay()
-                                    ->andFrom('09:00')->to('09:30')->everyDay();
-
-    $example_sla_periods = collect(invade($example_sla_schedule)->agendas)->flatMap(function ($a) use ($example_subject_period) {
-        return $a->toPeriods($example_subject_period);
-    })->toArray();
-
-    $combined = $example_subject_period->overlapAny($example_sla_periods);
-    $interval = collect($combined)->reduce(
-        fn ($carry, $p) => CarbonInterval::seconds($p->end->unix() - $p->start->unix())->add($carry),
-        CarbonInterval::seconds(0)
-    );
-
-    expect($combined)
-        ->and($interval->totalSeconds)->toEqual(1800);
-});
-
 it('tests the SLA across a short duration', function () {
+    $subject_start_time = '2022-07-17 08:59:00';
+    $time_now = '2022-07-17 09:00:30';
+
     $sla = new SLA(
         (new SLASchedule)->from('09:00:00')->to('17:00:00')->everyDay()
     );
 
-    testTime()->freeze('2022-07-17 09:00:30');
-    expect($sla->status('2022-07-17 08:59:00')->interval->totalSeconds)->toEqual(30);
+    testTime()->freeze($time_now);
+    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
 });
 
 it('tests the SLA with breaches', function () {
+    $subject_start_time = '2022-07-17 08:59:00';
+    $time_now = '2022-07-17 09:00:30';
+
     $sla = new SLA(
         (new SLASchedule)->from('09:00:00')->to('17:00:00')->everyDay()
     );
@@ -99,13 +51,16 @@ it('tests the SLA with breaches', function () {
         new SLABreach('Time to Resolution', '31s'),
     );
 
-    testTime()->freeze('2022-07-17 09:00:30');
-    expect($sla->status('2022-07-17 08:59:00')->interval->totalSeconds)->toEqual(30)
-        ->and(expect($sla->status('2022-07-17 08:59:00')->breaches)->toHaveCount(1))
-        ->and(expect($sla->status('2022-07-17 08:59:00')->breaches[0]->breached)->toEqual(true));
+    testTime()->freeze($time_now);
+    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30)
+        ->and(expect($sla->status($subject_start_time)->breaches)->toHaveCount(1))
+        ->and(expect($sla->status($subject_start_time)->breaches[0]->breached)->toEqual(true));
 });
 
 it('tests the SLA over certain days', function () {
+    $subject_start_time = '2022-07-21 08:59:00';
+    $time_now = '2022-07-21 09:00:30';
+
     $sla = SLA::fromSchedule(
         (new SLASchedule)->from('09:00:00')->to('17:00:00')->on('Thursdays')
     );
@@ -115,13 +70,16 @@ it('tests the SLA over certain days', function () {
         new SLABreach('Time to Resolution', '31s'),
     );
 
-    testTime()->freeze('2022-07-21 09:00:30');
-    expect($sla->status('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(30)
-        ->and(expect($sla->status('2022-07-17 08:59:00')->breaches)->toHaveCount(1))
-        ->and(expect($sla->status('2022-07-17 08:59:00')->breaches[0]->breached)->toEqual(true));
+    testTime()->freeze($time_now);
+    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30)
+        ->and(expect($sla->status($subject_start_time)->breaches)->toHaveCount(1))
+        ->and(expect($sla->status($subject_start_time)->breaches[0]->breached)->toEqual(true));
 });
 
 it('tests the SLA over certain other days', function () {
+    $subject_start_time = '2022-07-21 08:59:00';
+    $time_now = '2022-07-21 09:00:30';
+
     $sla = SLA::fromSchedule(
         (new SLASchedule)->from('09:00:00')->to('17:00:00')->on('Wednesdays')
     );
@@ -131,22 +89,35 @@ it('tests the SLA over certain other days', function () {
         new SLABreach('Time to Resolution', '31s'),
     );
 
-    testTime()->freeze('2022-07-21 09:00:30');
-    expect($sla->status('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(0)
-        ->and(expect($sla->status('2022-07-21 08:59:00')->breaches)->toHaveCount(0));
+    testTime()->freeze($time_now);
+    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(0)
+        ->and(expect($sla->status($subject_start_time)->breaches)->toHaveCount(0));
 });
 
 it('tests the SLA with double declaration of SLAs', function () {
+    $subject_start_time = '2022-07-21 08:59:00';
+    $time_now = '2022-07-21 09:00:30';
+
     $sla = SLA::fromSchedule(
         (new SLASchedule)->from('09:00:00')->to('17:00:00')->on('Thursday')
             ->and()->from('09:00:00')->to('17:00:00')->on('Thursday')
     );
 
-    $sla->addBreaches(
-        new SLABreach('Time to First Response', '29s'),
-        new SLABreach('Time to Resolution', '31s'),
+    testTime()->freeze($time_now);
+    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
+});
+
+
+it('tests SLA stopping', function () {
+    $subject_start_time = '2022-07-21 08:59:00';
+    $subject_stop_time = '2022-07-21 09:00:20';
+    $time_now = '2022-07-21 09:00:30';
+
+    $sla = SLA::fromSchedule(
+        (new SLASchedule)->from('09:00:00')->to('17:00:00')->on('Thursday')
+            ->and()->from('09:00:00')->to('17:00:00')->on('Thursday')
     );
 
-    testTime()->freeze('2022-07-21 09:00:30');
-    expect($sla->status('2022-07-21 08:59:00')->interval->totalSeconds)->toEqual(30);
+    testTime()->freeze($time_now);
+    expect($sla->status($subject_start_time, $subject_stop_time)->interval->totalSeconds)->toEqual(20);
 });

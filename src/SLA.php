@@ -7,9 +7,7 @@ use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
 use Cmixin\EnhancedPeriod;
 use ReflectionException;
-use Sifex\SlaTimer\Agendas\Weekly;
 use Sifex\SlaTimer\Trai\IsAnAgenda;
-use Spatie\Period\Visualizer;
 
 class SLA
 {
@@ -53,9 +51,11 @@ class SLA
         return $this;
     }
 
-    public function addSchedule(SLASchedule $definition)
+    public function addSchedule(SLASchedule $definition): self
     {
         $this->schedules[] = $definition;
+
+        return $this;
     }
 
     public static function fromSchedule(SLASchedule $definition): SLA
@@ -63,7 +63,7 @@ class SLA
         return new self($definition);
     }
 
-    private function startedAt($subject_start_time): SLAStatus
+    private function calculate($subject_start_time, $subject_stop_time = null): SLAStatus
     {
         $main_target_period = $this->get_current_duration(
             // When the SLA started
@@ -71,7 +71,7 @@ class SLA
 
             // From where we want to stop counting the SLA up to
             // TODO Customise the stop time
-            Carbon::now()
+            $subject_stop_time ?? Carbon::now()
         );
 
         // Iterate over the period
@@ -103,7 +103,6 @@ class SLA
                 ->reduce(function ($carry, CarbonPeriod $p) {
                     return count($carry) ? [...$p->diff(...$carry), ...$carry] : [$p];
                 }, []);
-
 
             /**
              * Grab all the overlapping periods from our daily agenda
@@ -140,14 +139,14 @@ class SLA
         );
     }
 
-    public function status(string $started_at): SLAStatus
+    public function status(string $started_at, string $stopped_at = null): SLAStatus
     {
-        return $this->startedAt($started_at);
+        return $this->calculate($started_at, $stopped_at);
     }
 
-    public function duration(string $started_at): CarbonInterval
+    public function duration(string $started_at, string $stopped_at = null): CarbonInterval
     {
-        return $this->startedAt($started_at)->interval;
+        return $this->calculate($started_at, $stopped_at)->interval;
     }
 
     /**
@@ -156,7 +155,7 @@ class SLA
      */
     public function breaches(string $started_at): array
     {
-        return $this->startedAt($started_at)->breaches;
+        return $this->calculate($started_at)->breaches;
     }
 
     /**
