@@ -77,8 +77,6 @@ $duration->forHumans(); // 2 hours 35 seconds
 
 You can check out the documentation here on the [SLA Timer docs page](https://sifex.github.io/sla-timer).
 
-
-
 ## Testing
 
 ```bash
