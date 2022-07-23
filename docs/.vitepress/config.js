@@ -2,9 +2,6 @@ export default {
     title: 'SLA Timer',
     description: 'Just playing around.',
     lastUpdated: true,
-    head: [
-        ['script', { src: 'https://cdn.tailwindcss.com' }]
-    ],
     themeConfig: {
         nav: [
             { text: 'Guide', link: '/guide/introduction' }
