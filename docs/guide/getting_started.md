@@ -73,12 +73,14 @@ To stop the SLA, simply pass in the date & time the SLA should be stopped into t
 
 ```php
 // Given the time now is 2022-07-21 11:00:35 & using the SLAs defined above
-$status = $sla->status('2022-07-21 08:00:00', '2022-07-21 10:00:00'); // SLAStatus
+$status = $sla->status('2022-07-21 08:00:00', '2022-07-21 09:35:00'); // SLAStatus
 $status->breaches // []
 
-$duration = $sla->duration('2022-07-21 08:00:00', '2022-07-21 10:00:00'); // CarbonInterval
-$duration->forHumans(); // 2 hours 35 seconds
+$duration = $sla->duration('2022-07-21 08:00:00', '2022-07-21 09:35:00'); // CarbonInterval
+$duration->forHumans(); // 35 min
 ```
 
 
 ## Setting up Pause Periods
+
+This is where things get a little backwards. In order to set up pause periods,  

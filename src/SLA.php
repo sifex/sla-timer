@@ -26,6 +26,13 @@ class SLA
     private array $breach_definitions = [];
 
     /**
+     * Pause periods used for pausing the SLAs as well as Holidays
+     *
+     * @var SLAPause[]
+     */
+    private array $pause_periods = [];
+
+    /**
      * @param  SLASchedule  $schedule
      *
      * @throws ReflectionException
@@ -37,16 +44,44 @@ class SLA
         $this->addSchedule($schedule);
     }
 
-    public function addBreach(SLABreach $breach): SLA
+    public function addBreach(SLABreach $breach): self
     {
         $this->breach_definitions[] = $breach;
 
         return $this;
     }
 
-    public function addBreaches(...$breaches): SLA
+    public function addBreaches(...$breaches): self
     {
         collect($breaches)->flatten()->each(fn ($b) => $this->addBreach($b));
+
+        return $this;
+    }
+
+    public function addPause(string $start_date, string $end_date): self
+    {
+        $this->pause_periods[] = new SLAPause($start_date, $end_date);
+
+        return $this;
+    }
+
+    public function addHoliday(string $date): self
+    {
+        $this->pause_periods[] = new SLAHoliday($date, $date);
+
+        return $this;
+    }
+
+    public function clearPausePeriods(): self
+    {
+        $this->pause_periods = [];
+
+        return $this;
+    }
+
+    public function addHolidays(string $dates): self
+    {
+        collect($dates)->flatten()->each(fn ($d) => $this->addHoliday($d));
 
         return $this;
     }
@@ -58,7 +93,7 @@ class SLA
         return $this;
     }
 
-    public static function fromSchedule(SLASchedule $definition): SLA
+    public static function fromSchedule(SLASchedule $definition): self
     {
         return new self($definition);
     }
@@ -113,6 +148,14 @@ class SLA
                 );
             } else {
                 $sla_coverage_area = [];
+            }
+
+            if ($this->pause_periods) {
+                $sla_coverage_area = collect($sla_coverage_area)->flatMap(function (CarbonPeriod $period) {
+                    $pause_periods = collect($this->pause_periods)->map(fn (SLAPause $pp) => $pp->toPeriod()->setDateInterval(CarbonInterval::seconds()))->toArray();
+
+                    return $period->diff(...$pause_periods);
+                })->toArray();
             }
 
             /**
