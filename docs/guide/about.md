@@ -29,4 +29,4 @@ import { withBase } from 'vitepress';
 
 ## How do I use `sla-timer`?
 
-🎉 Head on over to **[Getting Started](/guide/getting_started.md)** to see how you can use this library
+🎉 Head on over to **[Getting Started ›](/guide/getting_started.md)** to see how you can use this library

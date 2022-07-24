@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="550px" height="74px" viewBox="0 0 550 74" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>sla_desc_light</title>
+    <defs>
+        <radialGradient cx="2.3433057%" cy="0.861786714%" fx="2.3433057%" fy="0.861786714%" r="4000.27268%" gradientTransform="translate(0.023433,0.008618),scale(0.024420,1.000000),rotate(1.420099),translate(-0.023433,-0.008618)" id="radialGradient-1">
+            <stop stop-color="#FFB14D" offset="0%"></stop>
+            <stop stop-color="#FF4F6E" offset="100%"></stop>
+        </radialGradient>
+        <radialGradient cx="2.3433057%" cy="0.861786714%" fx="2.3433057%" fy="0.861786714%" r="1689.57079%" gradientTransform="translate(0.023433,0.008618),scale(0.057899,1.000000),rotate(3.363852),translate(-0.023433,-0.008618)" id="radialGradient-2">
+            <stop stop-color="#FFB14D" offset="0%"></stop>
+            <stop stop-color="#FF4F6E" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="SLA-Explanation-Light" transform="translate(-27.000000, -48.000000)">
+            <g id="Group-8" transform="translate(27.000000, 45.989977)">
+                <rect id="Rectangle-Copy" fill="#D8D8D8" x="0" y="56.3230532" width="78.5714286" height="19.1703932" rx="4.8"></rect>
+                <rect id="Rectangle-Copy" fill="url(#radialGradient-1)" opacity="0.490257626" x="13.209607" y="26.3693138" width="343.449782" height="8.38704703"></rect>
+                <rect id="Rectangle-Copy-8" fill="#D8D8D8" opacity="0.335635231" x="471.428571" y="56.3230532" width="78.5714286" height="19.1703932" rx="4.8"></rect>
+                <rect id="Rectangle-Copy-7" fill="#CBCBCB" opacity="0.335635231" x="392.857143" y="56.3230532" width="78.5714286" height="19.1703932" rx="4.8"></rect>
+                <rect id="Rectangle-Copy-6" fill="#D8D8D8" x="314.285714" y="56.3230532" width="78.5714286" height="19.1703932" rx="4.8"></rect>
+                <rect id="Rectangle-Copy-5" fill="#CBCBCB" x="235.714286" y="56.3230532" width="78.5714286" height="19.1703932" rx="4.8"></rect>
+                <rect id="Rectangle-Copy-4" fill="#D8D8D8" x="157.142857" y="56.3230532" width="78.5714286" height="19.1703932" rx="4.8"></rect>
+                <rect id="Rectangle-Copy-2" fill="#CBCBCB" x="78.5714286" y="56.3230532" width="78.5714286" height="19.1703932" rx="4.8"></rect>
+                <rect id="Rectangle-Copy-13" fill="#7C3C47" x="339.468864" y="56.3230532" width="28.2051282" height="19.1703932" rx="6"></rect>
+                <path d="M345.468864,56.3230532 L356.281092,56.3230532 L356.281092,56.3230532 L356.281092,75.4934464 L345.468864,75.4934464 C342.155156,75.4934464 339.468864,72.8071549 339.468864,69.4934464 L339.468864,62.3230532 C339.468864,59.0093447 342.155156,56.3230532 345.468864,56.3230532 Z M266.897436,56.3230532 L283.102564,56.3230532 C286.416273,56.3230532 289.102564,59.0093447 289.102564,62.3230532 L289.102564,69.4934464 C289.102564,72.8071549 286.416273,75.4934464 283.102564,75.4934464 L266.897436,75.4934464 C263.583727,75.4934464 260.897436,72.8071549 260.897436,69.4934464 L260.897436,62.3230532 C260.897436,59.0093447 263.583727,56.3230532 266.897436,56.3230532 Z M188.326007,56.3230532 L204.531136,56.3230532 C207.844844,56.3230532 210.531136,59.0093447 210.531136,62.3230532 L210.531136,69.4934464 C210.531136,72.8071549 207.844844,75.4934464 204.531136,75.4934464 L188.326007,75.4934464 C185.012299,75.4934464 182.326007,72.8071549 182.326007,69.4934464 L182.326007,62.3230532 C182.326007,59.0093447 185.012299,56.3230532 188.326007,56.3230532 Z M109.754579,56.3230532 L125.959707,56.3230532 C129.273415,56.3230532 131.959707,59.0093447 131.959707,62.3230532 L131.959707,69.4934464 C131.959707,72.8071549 129.273415,75.4934464 125.959707,75.4934464 L109.754579,75.4934464 C106.44087,75.4934464 103.754579,72.8071549 103.754579,69.4934464 L103.754579,62.3230532 C103.754579,59.0093447 106.44087,56.3230532 109.754579,56.3230532 Z M31.1831502,56.3230532 L47.3882784,56.3230532 C50.7019869,56.3230532 53.3882784,59.0093447 53.3882784,62.3230532 L53.3882784,69.4934464 C53.3882784,72.8071549 50.7019869,75.4934464 47.3882784,75.4934464 L31.1831502,75.4934464 C27.8694417,75.4934464 25.1831502,72.8071549 25.1831502,69.4934464 L25.1831502,62.3230532 C25.1831502,59.0093447 27.8694417,56.3230532 31.1831502,56.3230532 Z" id="Combined-Shape" fill="url(#radialGradient-2)"></path>
+                <text id="Mon" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="8.4" font-weight="600" fill="#C7C7C7">
+                    <tspan x="28.0762695" y="50">MON</tspan>
+                </text>
+                <text id="Tues" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="8.4" font-weight="600" fill="#C7C7C7">
+                    <tspan x="107.245703" y="50">TUES</tspan>
+                </text>
+                <text id="Wed" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="8.4" font-weight="600" fill="#C7C7C7">
+                    <tspan x="186.414648" y="50">WED</tspan>
+                </text>
+                <text id="Thur" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="8.4" font-weight="600" fill="#C7C7C7">
+                    <tspan x="263.521777" y="50">THUR</tspan>
+                </text>
+                <text id="Sat" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="8.4" font-weight="600" fill="#C7C7C7">
+                    <tspan x="424.149609" y="50">SAT</tspan>
+                </text>
+                <text id="Sun" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="8.4" font-weight="600" fill="#C7C7C7">
+                    <tspan x="502.237012" y="50">SUN</tspan>
+                </text>
+                <path d="M356.058952,2.40632228 C358.380236,2.40632228 360.262009,4.28382671 360.262009,6.5998458 C360.262009,8.71250711 358.696186,10.4602804 356.65927,10.7509185 L356.659389,75.4934464 L355.458515,75.4934464 L355.458634,10.7509185 C353.421718,10.4602804 351.855895,8.71250711 351.855895,6.5998458 C351.855895,4.28382671 353.737668,2.40632228 356.058952,2.40632228 Z" id="Combined-Shape" fill="#FF506E" fill-rule="nonzero"></path>
+                <text id="Now" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="10.8" font-weight="600" fill="#FF506E">
+                    <tspan x="366.275109" y="10">Now</tspan>
+                </text>
+                <text id="29-Jul-2022" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="8.4" font-weight="600" fill="#C7C7C7">
+                    <tspan x="366.649414" y="20.0100231">29 Jul 2022</tspan>
+                </text>
+                <path d="M16.8122271,3.60447186 L13.2091135,9.76647186 L13.209607,75.4934464 L12.0087336,75.4934464 L12.0081135,9.76447186 L8.40611354,3.60447186 L16.8122271,3.60447186 Z" id="Combined-Shape" fill="#FFAF4F" fill-rule="nonzero"></path>
+                <text id="Created" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="10.8" font-weight="600" fill="#FFAF4F">
+                    <tspan x="22.8318777" y="10">Created</tspan>
+                </text>
+                <text id="25-Jul-2022" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="8.4" font-weight="600" fill="#C7C7C7">
+                    <tspan x="22.7519531" y="20.0100231">25 Jul 2022</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

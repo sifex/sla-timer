@@ -8,3 +8,7 @@
     --vp-c-brand-lighter: #ff8b75;
     --vp-c-brand-dark: #d55f48;
 }
+
+html, body {
+    /*@apply transition-all duration-100 !important;*/
+}

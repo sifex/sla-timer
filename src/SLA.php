@@ -99,6 +99,25 @@ class SLA
         return new self($definition);
     }
 
+    public function status(string $started_at, string $stopped_at = null): SLAStatus
+    {
+        return $this->calculate($started_at, $stopped_at);
+    }
+
+    public function duration(string $started_at, string $stopped_at = null): CarbonInterval
+    {
+        return $this->calculate($started_at, $stopped_at)->interval;
+    }
+
+    /**
+     * @param  string  $started_at
+     * @return SLABreach[]
+     */
+    public function breaches(string $started_at): array
+    {
+        return $this->calculate($started_at)->breaches;
+    }
+
     private function calculate($subject_start_time, $subject_stop_time = null): SLAStatus
     {
         $main_target_period = $this->get_current_duration(
@@ -106,7 +125,7 @@ class SLA
             Carbon::parse($subject_start_time),
 
             // From where we want to stop counting the SLA up to
-            // TODO Customise the stop time
+
             $subject_stop_time ?? Carbon::now()
         );
 
@@ -130,7 +149,7 @@ class SLA
              * Grab the enabled schedule, compare this every day to see if we now have a schedule that would
              * supersede it. // TODO
              */
-            $enabled_schedule = $this->get_enabled_schedule_for_day();
+            $enabled_schedule = $this->get_enabled_schedule_for_day($daily_period);
 
             /**
              * Deduplicate our SLA Periods
@@ -191,9 +210,9 @@ class SLA
         );
     }
 
-    private function recalculate_sla_periods($main_target_period): array
+    private function recalculate_sla_periods(Carbon $from, Carbon $to): array
     {
-        return collect($this->get_enabled_schedule_for_day()->agendas)
+        return collect($this->get_enabled_schedule_for_day($from)->agendas)
             ->flatMap(fn (IsAnAgenda $a) => $a->toPeriods($main_target_period))
             ->reduce(function(Collection $carry, CarbonPeriod $sla_period) {
                 [$overlapping_periods, $carry] = $carry->partition(function($existing_period) use ($sla_period) {
@@ -220,25 +239,6 @@ class SLA
             }, collect())->toArray();
     }
 
-    public function status(string $started_at, string $stopped_at = null): SLAStatus
-    {
-        return $this->calculate($started_at, $stopped_at);
-    }
-
-    public function duration(string $started_at, string $stopped_at = null): CarbonInterval
-    {
-        return $this->calculate($started_at, $stopped_at)->interval;
-    }
-
-    /**
-     * @param  string  $started_at
-     * @return SLABreach[]
-     */
-    public function breaches(string $started_at): array
-    {
-        return $this->calculate($started_at)->breaches;
-    }
-
     /**
      * Gets the current subject duration, sets the interval to 1d and filters out anything we don't want
      *
@@ -256,13 +256,14 @@ class SLA
     /**
      * Gets the enabled schedule for any given day
      *
+     * @param Carbon $day
      * @return SLASchedule
      */
-    private function get_enabled_schedule_for_day(): SLASchedule
+    private function get_enabled_schedule_for_day(Carbon $day): SLASchedule
     {
         return collect($this->schedules)
-            ->filter(function ($schedule) {
-                return true; // TODO Filter out based on `effective_date`
+            ->filter(function (SLASchedule $schedule) use ($day) {
+                return Carbon::parse($schedule->valid_from)->unix() < $day->unix();
             })
             ->last();
     }
@@ -289,8 +290,7 @@ class SLA
         return collect($intervals)
             ->reduce(function (CarbonInterval $i, CarbonInterval $overlapping_period) {
                 return $i->add($overlapping_period->cascade())->cascade();
-            }, CarbonInterval::seconds(0))
-            ->cascade();
+            }, CarbonInterval::seconds(0));
     }
 
     /**
