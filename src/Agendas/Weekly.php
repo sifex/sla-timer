@@ -82,6 +82,5 @@ class Weekly implements IsAnAgenda
 
     public function getPeriods(CarbonPeriod $subject_period)
     {
-
     }
 }

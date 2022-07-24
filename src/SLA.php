@@ -3,10 +3,10 @@
 namespace Sifex\SlaTimer;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
 use Cmixin\EnhancedPeriod;
-use Illuminate\Support\Collection;
 use ReflectionException;
 use Sifex\SlaTimer\Trai\IsAnAgenda;
 
@@ -121,14 +121,11 @@ class SLA
     private function calculate($subject_start_time, $subject_stop_time = null): SLAStatus
     {
         $main_target_period = $this->get_current_duration(
-            // When the SLA started
             Carbon::parse($subject_start_time),
-
-            // From where we want to stop counting the SLA up to
-
             $subject_stop_time ?? Carbon::now()
         );
 
+        // TODO End period should just be up until the next schedule is made
         $sla_periods = $this->recalculate_sla_periods($main_target_period->start, $main_target_period->end);
 
         // Iterate over the period
@@ -149,7 +146,7 @@ class SLA
              * Grab the enabled schedule, compare this every day to see if we now have a schedule that would
              * supersede it. // TODO
              */
-            $enabled_schedule = $this->get_enabled_schedule_for_day($daily_period);
+            $enabled_schedule = $this->get_enabled_schedule_for_day($daily_period->start);
 
             /**
              * Deduplicate our SLA Periods
@@ -164,13 +161,14 @@ class SLA
              * This function has been optimised
              */
             $sla_coverage_periods = collect($sla_periods)
-                ->map(function(CarbonPeriod $sla_period) use ($daily_period) {
+                ->map(function (CarbonPeriod $sla_period) use ($daily_period) {
                     $e = max($sla_period->start->unix(), $daily_period->start->unix());
                     $f = min($sla_period->end->unix(), $daily_period->end->unix());
 
-                    if($e > $f) {
+                    if ($e > $f) {
                         return null;
                     }
+
                     return CarbonPeriod::create(
                         Carbon::parse($e),
                         Carbon::parse($f),
@@ -210,33 +208,13 @@ class SLA
         );
     }
 
-    private function recalculate_sla_periods(Carbon $from, Carbon $to): array
+    private function recalculate_sla_periods(CarbonInterface $from, CarbonInterface $to): array
     {
         return collect($this->get_enabled_schedule_for_day($from)->agendas)
-            ->flatMap(fn (IsAnAgenda $a) => $a->toPeriods($main_target_period))
-            ->reduce(function(Collection $carry, CarbonPeriod $sla_period) {
-                [$overlapping_periods, $carry] = $carry->partition(function($existing_period) use ($sla_period) {
-                    $e = max($sla_period->start->unix(), $existing_period->start->unix());
-                    $f = min($sla_period->end->unix(), $existing_period->end->unix());
-
-                    if($e > $f) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                });
-
-                if($overlapping_periods->count()) {
-                    return $carry->add(
-                        CarbonPeriod::create(
-                            collect($overlapping_periods)->add($sla_period)->map(fn(CarbonPeriod $p) => $p->start->unix())->max(),
-                            collect($overlapping_periods)->add($sla_period)->map(fn(CarbonPeriod $p) => $p->end->unix())->min(),
-                        )
-                    );
-                } else {
-                    return $carry->add($sla_period);
-                }
-            }, collect())->toArray();
+            ->flatMap(fn (IsAnAgenda $a) => $a->toPeriods(CarbonPeriod::create($from, $to)))
+            ->reduce(function ($carry, CarbonPeriod $p) {
+                return count($carry) ? [...$p->diff(...$carry), ...$carry] : [$p];
+            }, []);
     }
 
     /**
@@ -256,7 +234,7 @@ class SLA
     /**
      * Gets the enabled schedule for any given day
      *
-     * @param Carbon $day
+     * @param  Carbon  $day
      * @return SLASchedule
      */
     private function get_enabled_schedule_for_day(Carbon $day): SLASchedule
