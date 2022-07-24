@@ -33,7 +33,7 @@ it('tests the SLA across a short duration', function () {
     );
 
     testTime()->freeze($time_now);
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
 });
 
 it('tests the SLA across a long duration', function () {
@@ -45,7 +45,7 @@ it('tests the SLA across a long duration', function () {
     );
 
     testTime()->freeze($time_now);
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(864030);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(864030);
 });
 
 it('tests the SLA with breaches', function () {
@@ -62,7 +62,7 @@ it('tests the SLA with breaches', function () {
     );
 
     testTime()->freeze($time_now);
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30)
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30)
         ->and(expect($sla->status($subject_start_time)->breaches)->toHaveCount(1))
         ->and(expect($sla->status($subject_start_time)->breaches[0]->breached)->toEqual(true));
 });
@@ -81,7 +81,7 @@ it('tests the SLA over certain days', function () {
     );
 
     testTime()->freeze($time_now);
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30)
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30)
         ->and(expect($sla->status($subject_start_time)->breaches)->toHaveCount(1))
         ->and(expect($sla->status($subject_start_time)->breaches[0]->breached)->toEqual(true));
 });
@@ -100,7 +100,7 @@ it('tests the SLA over certain other days', function () {
     );
 
     testTime()->freeze($time_now);
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(0)
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(0)
         ->and(expect($sla->status($subject_start_time)->breaches)->toHaveCount(0));
 });
 
@@ -114,7 +114,7 @@ it('tests the SLA with double declaration of SLAs', function () {
     );
 
     testTime()->freeze($time_now);
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
 });
 
 it('tests SLA stopping', function () {
@@ -140,13 +140,13 @@ it('tests SLA pausing', function () {
     );
 
     testTime()->freeze($time_now);
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
 
     $sla->addPause('2022-07-21 09:00:00', '2022-07-21 09:00:19');
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(10);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(10);
 
     $sla->clearPausePeriods();
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
 });
 
 it('tests SLA vacations', function () {
@@ -158,11 +158,30 @@ it('tests SLA vacations', function () {
     );
 
     testTime()->freeze($time_now);
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
 
     $sla->addHoliday('2022-07-21');
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(0);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(0);
 
     $sla->clearPausePeriods();
-    expect($sla->status($subject_start_time)->interval->totalSeconds)->toEqual(30);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
+});
+
+it('tests superseded schedules', function () {
+    $subject_start_time = '2022-07-21 08:59:00';
+    $time_now = '2022-07-21 09:00:30';
+
+    $sla = SLA::fromSchedule(
+        SLASchedule::create()->from('09:00:00')->to('17:00:00')
+    );
+
+    testTime()->freeze($time_now);
+
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
+
+    $sla->addSchedule(
+        SLASchedule::create()->effectiveFrom('2022-07-20')->from('09:00:00')->to('09:00:01')->everyDay()
+    );
+
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(1);
 });

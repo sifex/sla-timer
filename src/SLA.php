@@ -144,7 +144,7 @@ class SLA
 
             /**
              * Grab the enabled schedule, compare this every day to see if we now have a schedule that would
-             * supersede it. // TODO
+             * supersede it.
              */
             $enabled_schedule = $this->get_enabled_schedule_for_day($daily_period->start);
 
@@ -152,8 +152,8 @@ class SLA
              * Deduplicate our SLA Periods
              * Why do this here? Mostly because of superseded schedules...
              */
-            if (false /* Our enabled schedule has changed today */) {
-                $sla_periods = $this->recalculate_sla_periods($main_target_period);
+            if ($daily_period->start->clone()->startOfDay()->unix() === Carbon::parse($enabled_schedule->valid_from)->clone()->startOfDay()->unix()) {
+                $sla_periods = $this->recalculate_sla_periods($daily_period->start, $main_target_period->end);
             }
 
             /**
@@ -167,7 +167,7 @@ class SLA
 
                     if ($e > $f) {
                         return null;
-                    }
+                    } // No Overlap
 
                     return CarbonPeriod::create(
                         Carbon::createFromTimestamp($e),
