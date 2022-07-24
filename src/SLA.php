@@ -129,7 +129,7 @@ class SLA
             $subject_stop_time ?? Carbon::now()
         );
 
-        $sla_periods = $this->recalculate_sla_periods($main_target_period);
+        $sla_periods = $this->recalculate_sla_periods($main_target_period->start, $main_target_period->end);
 
         // Iterate over the period
         $interval = collect($main_target_period)->map(function (Carbon $daily_subject_period) use ($main_target_period, $sla_periods) {
