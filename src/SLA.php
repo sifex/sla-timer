@@ -174,7 +174,11 @@ class SLA
                         Carbon::createFromTimestamp($f),
                     )->setDateInterval(CarbonInterval::seconds());
                 })
-                ->whereNotNull();
+                ->whereNotNull()
+                ->reduce(function ($carry, CarbonPeriod $p) {
+                    /** De-duplicate overlapping SLA periods */
+                    return count($carry) ? [...$p->diff(...$carry), ...$carry] : [$p];
+                }, []);
 
             if ($this->pause_periods) {
                 $sla_coverage_periods = collect($sla_coverage_periods)->flatMap(function (CarbonPeriod $period) {
@@ -212,9 +216,7 @@ class SLA
     {
         return collect($this->get_enabled_schedule_for_day($from)->agendas)
             ->flatMap(fn (IsAnAgenda $a) => $a->toPeriods(CarbonPeriod::create($from, $to)))
-            ->reduce(function ($carry, CarbonPeriod $p) {
-                return count($carry) ? [...$p->diff(...$carry), ...$carry] : [$p];
-            }, []);
+            ->toArray();
     }
 
     /**
@@ -237,7 +239,7 @@ class SLA
      * @param  Carbon  $day
      * @return SLASchedule
      */
-    private function get_enabled_schedule_for_day(Carbon $day): SLASchedule
+    private function get_enabled_schedule_for_day(CarbonInterface $day): SLASchedule
     {
         return collect($this->schedules)
             ->filter(function (SLASchedule $schedule) use ($day) {
