@@ -1,10 +1,6 @@
 # Getting Started
 
-## Installation
-
-::: danger
-⚠️ This package is currently under construction! ⚠️
-:::
+### Installation
 
 You can install the `sla-timer` via composer:
 
@@ -23,7 +19,9 @@ Before we dive in, ensure you understand what SLAs & SLA Timers are by exploring
 :::
 
 
-Let's set up an SLA timer similar to the schedule shown below.<br />For this example, we're working in the week of 25th - 29th July 2022, but the library works over many weeks
+Let's set up an SLA timer similar to the schedule shown below.
+
+For this example, we're working in the week of 25th - 29th July 2022, but the library works over [as long as you want*](#disclaimers).
 
 <script setup>
 import { withBase } from 'vitepress';
@@ -103,5 +101,14 @@ $duration->forHumans(); // 9 hours 30 minutes
 
 ## Setting up Pause Periods
 
-Pause periods & holidays operate very similarly. So set up either, head over to [Holidays & Skipped Days](/guide/holidays)
+Sometimes we will want to pause our timer, start this, head over to ["Pausing the SLA"](/guide/pausing) 
+
+<br /><br /><br /><br />
+
+---
+
+#### Disclaimers
+
+\* `sifex/sla-timer` is still inefficient at calculating SLAs over periods longer than a month.
+
 

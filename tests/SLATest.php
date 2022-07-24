@@ -109,8 +109,9 @@ it('tests the SLA with double declaration of SLAs', function () {
     $time_now = '2022-07-21 09:00:30';
 
     $sla = SLA::fromSchedule(
-        SLASchedule::create()->from('09:00:00')->to('17:00:00')->on('Thursday')
-            ->and()->from('09:00:00')->to('17:00:00')->on('Thursday')
+        SLASchedule::create()
+            ->from('09:00:00')->to('17:00:00')->on('Thursday')->and()
+            ->from('09:00:00')->to('17:00:00')->on('Thursday')
     );
 
     testTime()->freeze($time_now);
@@ -185,3 +186,22 @@ it('tests superseded schedules', function () {
 
     expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(1);
 });
+
+//it('tests 0 length SLAs', function () {
+//    $subject_start_time = '2022-07-21 08:59:00';
+//    $time_now = '2022-07-21 09:00:30';
+//
+//    $sla = SLA::fromSchedule(
+//        SLASchedule::create()->from('09:00:00')->to('17:00:00')
+//    );
+//
+//    testTime()->freeze($time_now);
+//
+//    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
+//
+//    $sla->addSchedule(
+//        SLASchedule::create()->effectiveFrom('2022-07-20')->from('09:00:00')->to('09:00:01')->everyDay()
+//    );
+//
+//    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(1);
+//});

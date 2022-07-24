@@ -25,6 +25,8 @@ export default {
                 items: [
                     { text: 'About SLAs', link: '/guide/about' },
                     { text: 'Getting Started', link: '/guide/getting_started' },
+                    { text: 'Pausing the SLA', link: '/guide/pausing' },
+                    { text: 'Schedule Building', link: '/guide/scheduling' },
                     { text: 'Updating Schedules', link: '/guide/updating_schedules' },
                     { text: 'Holidays & Skipped Days', link: '/guide/holidays' },
                 ]
@@ -32,6 +34,7 @@ export default {
             {
                 text: 'Integrations',
                 items: [
+                    { text: 'Frontend (TypeScript)', link: '/integrations/typescript' },
                     { text: 'Laravel', link: '/integrations/laravel' },
                 ]
             }
