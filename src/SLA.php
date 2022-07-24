@@ -162,16 +162,16 @@ class SLA
              */
             $sla_coverage_periods = collect($sla_periods)
                 ->map(function (CarbonPeriod $sla_period) use ($daily_period) {
-                    $e = max($sla_period->start->unix(), $daily_period->start->unix());
-                    $f = min($sla_period->end->unix(), $daily_period->end->unix());
+                    $e = max($sla_period->start->getTimestamp(), $daily_period->start->getTimestamp());
+                    $f = min($sla_period->end->getTimestamp(), $daily_period->end->getTimestamp());
 
                     if ($e > $f) {
                         return null;
                     }
 
                     return CarbonPeriod::create(
-                        Carbon::parse($e),
-                        Carbon::parse($f),
+                        Carbon::createFromTimestamp($e),
+                        Carbon::createFromTimestamp($f),
                     )->setDateInterval(CarbonInterval::seconds());
                 })
                 ->whereNotNull();
@@ -241,7 +241,7 @@ class SLA
     {
         return collect($this->schedules)
             ->filter(function (SLASchedule $schedule) use ($day) {
-                return Carbon::parse($schedule->valid_from)->unix() < $day->unix();
+                return Carbon::parse($schedule->valid_from)->getTimestamp() < $day->getTimestamp();
             })
             ->last();
     }
@@ -254,7 +254,7 @@ class SLA
      */
     private static function calculate_interval($period): CarbonInterval
     {
-        return CarbonInterval::seconds($period->end->unix() - $period->start->unix());
+        return CarbonInterval::seconds($period->end->getTimestamp() - $period->start->getTimestamp());
     }
 
     /**

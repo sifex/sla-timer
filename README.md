@@ -21,8 +21,8 @@ A PHP package for calculating & tracking the Service Level Agreement completion 
 - 🏝 Holiday & Paused Durations
 
 
-![Basic SLA Format](https://github.com/sifex/sla-timer/raw/HEAD/docs/public/images/sla_basic_dark.svg#gh-dark-mode-only)
-![Basic SLA Format](https://github.com/sifex/sla-timer/raw/HEAD/docs/public/images/sla_basic_light.svg#gh-light-mode-only)
+<img src="https://github.com/sifex/sla-timer/raw/HEAD/docs/public/images/sla_basic_dark.svg#gh-dark-mode-only" alt="SLA Explanation" width="830">
+<img src="https://github.com/sifex/sla-timer/raw/HEAD/docs/public/images/sla_basic_light.svg#gh-light-mode-only" alt="SLA Explanation" width="830">
 
 ## Installation
 

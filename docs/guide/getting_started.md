@@ -72,7 +72,7 @@ $status = $sla->status('05:35:40 25-07-2022'); // SLAStatus
 $status->breaches; // [SLABreach] [0: { First Response } ]
 
 $duration = $sla->duration('05:35:40 25-07-2022'); // CarbonInterval
-$duration->forHumans(); // 2 hours 35 seconds
+$duration->forHumans(); // 1 day 15 hours
 ```
 
 ::: info Please note:
@@ -92,12 +92,12 @@ All times should be in UTC. If your `datetimes` are not in UTC, you can see our 
 To stop the SLA, simply pass in the date & time the SLA should be stopped into the `status` or `duration` method.
 
 ```php
-// Given the time now is 2022-07-21 11:00:35 & using the SLAs defined above
-$status = $sla->status('2022-07-21 08:00:00', '2022-07-21 09:35:00'); // SLAStatus
-$status->breaches // []
+// Given the time now is 14:00:00 29-07-2022
+$status = $sla->status('05:35:40 25-07-2022', '10:00:00 26-07-2022'); // SLAStatus
+$status->breaches; // []
 
-$duration = $sla->duration('2022-07-21 08:00:00', '2022-07-21 09:35:00'); // CarbonInterval
-$duration->forHumans(); // 35 min
+$duration = $sla->duration('05:35:40 25-07-2022', '10:00:00 26-07-2022'); // CarbonInterval
+$duration->forHumans(); // 9 hours 30 minutes 
 ```
 
 
