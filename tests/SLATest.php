@@ -213,6 +213,18 @@ it('tests superseded schedules but there was a bug with which day it starts on',
 
     testTime()->freeze('2022-07-27 10:00:00'); // After Period on the 27th
     expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(150);
+
+    testTime()->freeze('2022-07-28 10:00:00'); // After Period on the 28th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(180);
+
+    testTime()->freeze('2022-07-29 10:00:00'); // After Period on the 29th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(210);
+
+    testTime()->freeze('2022-07-30 10:00:00'); // After Period on the 30th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(220);
+
+    testTime()->freeze('2022-07-31 10:00:00'); // After Period on the 31st
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(230);
 });
 
 //it('tests 0 length SLAs', function () {

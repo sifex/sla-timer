@@ -129,7 +129,7 @@ class SLA
         $sla_periods = $this->recalculate_sla_periods($main_target_period->start, $main_target_period->end);
 
         // Iterate over the period
-        $interval = collect($main_target_period)->map(function (Carbon $daily_subject_period) use ($main_target_period, $sla_periods) {
+        $interval = collect($main_target_period)->map(function (Carbon $daily_subject_period) use ($main_target_period, &$sla_periods) {
             /**
              * After we've divided each day, find where the start and end times are by min/max'ing them
              */
