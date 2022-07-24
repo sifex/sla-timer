@@ -4,26 +4,23 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/sifex/sla-timer.svg?style=flat&labelColor=2c353c)](https://packagist.org/packages/sifex/sla-timer)
 ![GitHub Actions](https://github.com/sifex/sla-timer/actions/workflows/main.yml/badge.svg)
 
-<a href="https://twitter.com/sifex/status/1548374115815346178">
-<img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring.svg?" alt="Hi, I'm Alex & I'm currently looking for a Laravel job. Please reach out to me via twitter, or click this link." height="49">
-</a>
-
-> **Warning**
-> This repository is currently under construction!  
-
-
 A PHP package for calculating & tracking the Service Level Agreement completion timings.
 
 ### Features
 
-- 🕚 Daily & Per-Day scheduling
+- 🕚 Easy schedule building
 - ‼️ Defined breaches
 - 🏝 Holiday & Paused Durations
 
+---
 
-<img src="https://github.com/sifex/sla-timer/raw/HEAD/docs/public/images/sla_basic_dark.svg#gh-dark-mode-only" alt="SLA Explanation" width="830">
-<img src="https://github.com/sifex/sla-timer/raw/HEAD/docs/public/images/sla_basic_light.svg#gh-light-mode-only" alt="SLA Explanation" width="830">
 
+<a href="https://twitter.com/sifex/status/1548374115815346178">
+<img src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring.svg?" alt="Hi, I'm Alex & I'm currently looking for a Laravel job. Please reach out to me via twitter, or click this link." height="49">
+</a>
+
+
+---
 ## Installation
 
 You can install the `sla-timer` via composer:
@@ -32,15 +29,21 @@ You can install the `sla-timer` via composer:
 composer require sifex/sla-timer
 ```
 
-### Requirements
+## Getting Started
 
-- `php` - Version 8.0 or higher
+The best place to get started with SLA timer is to head over to the [✨ SLA Timer Getting Started Documentation](https://sifex.github.io/sla-timer/guide/getting_started). 
 
 ## Example Usage
 
 To create a new SLA Timer, we can start by defining our SLA Schedule:
 
-```php {5-6}
+```php
+require 'vendor/autoload.php';
+
+use Sifex\SlaTimer\SLA;
+use Sifex\SlaTimer\SLABreach;
+use Sifex\SlaTimer\SLASchedule;
+
 /**
  * Create a new SLA between 9am and 5:30pm weekdays
  */
@@ -52,30 +55,26 @@ $sla = SLA::fromSchedule(
 
 We can define out breaches by calling the `addBreaches` method on our SLA
 
-```php {5-6}
+```php
 /**
  * Define two breaches, one at 45 minutes, and the next at 24 hours
  */
 $sla->addBreaches([
-    new SLABreach('First Response', '45m'),
-    new SLABreach('Resolution', '24h'),
+    new SLABreach('First Response', '24h'),
+    new SLABreach('Resolution', '100h'),
 ]);
 ```
 
-Now that our **SLA Schedule** and **SLA Breaches** are defined, all we have to do is give our _subject_ "creation time" – or our SLA star time – to either the `status` method, or the `duration` method.
+Now that our **SLA Schedule** and **SLA Breaches** are defined, all we have to do is give our _subject_ "creation time" – or our SLA start time – to either the `status` method, or the `duration` method.
 
 ```php
-// Given the time now is 2022-07-21 11:00:35 
-$status = $sla->status('2022-07-21 09:00:00'); // SLAStatus
-$status->breaches // [SLABreach]{1}
+// Given the time now is 14:00:00 29-07-2022
+$status = $sla->status('05:35:40 25-07-2022'); // SLAStatus
+$status->breaches; // [SLABreach] [0: { First Response } ]
 
-$duration = $sla->duration('2022-07-21 09:00:00'); // CarbonInterval
-$duration->forHumans(); // 2 hours 35 seconds
+$duration = $sla->duration('05:35:40 25-07-2022'); // CarbonInterval
+$duration->forHumans(); // 1 day 15 hours
 ```
-
-## Documentation
-
-You can check out the documentation here on the [SLA Timer docs page](https://sifex.github.io/sla-timer).
 
 ## Testing
 
@@ -86,10 +85,6 @@ composer test
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Frequently Asked Questions
-
-// TODO
 
 ## Credits
 
