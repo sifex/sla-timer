@@ -13,12 +13,12 @@ hero:
       text: View on GitHub
       link: https://github.com/sifex/sla-timer
 features:
-  - title: Daily & Per-Day Scheduling
-    details: SLA Timer makes it super easy to calculate 
+  - title: Easy Scheduling
+    details: SLA Timer makes it super easy to build your own custom SLA schedules 
   - title: Breaches
-    details: Set multiple thresholds for when an SLA is breached
+    details: Set multiple thresholds for when your SLAs are breached
   - title: Holiday Time
-    details: Simply set up skipped days, holidays, & setup pause periods
+    details: Simply set up skipped days, holidays, & setup pause periods for your SLAs
 ---
 
 
