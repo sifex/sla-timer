@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: SLA Timer
-  text: Your PHP Package to SLA tracking
+  text: Your PHP Package for SLA tracking
   tagline: A PHP package for calculating & tracking the Service Level Agreement completion timings.
   actions:
     - theme: brand
