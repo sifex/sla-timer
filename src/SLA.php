@@ -80,7 +80,7 @@ class SLA
         return $this;
     }
 
-    public function addHolidays(string $dates): self
+    public function addHolidays($dates): self
     {
         collect($dates)->flatten()->each(fn ($d) => $this->addHoliday($d));
 

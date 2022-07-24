@@ -5,7 +5,7 @@
 You can install the `sla-timer` via composer:
 
 ```bash
-composer require sifex/sla-timer
+$ composer require sifex/sla-timer
 ```
 
 ### Requirements

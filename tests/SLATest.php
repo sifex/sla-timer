@@ -152,20 +152,20 @@ it('tests SLA pausing', function () {
 
 it('tests SLA vacations', function () {
     $subject_start_time = '2022-07-21 08:59:00';
-    $time_now = '2022-07-21 09:00:30';
+    $time_now = '2022-07-23 10:00:00';
 
     $sla = SLA::fromSchedule(
-        SLASchedule::create()->from('09:00:00')->to('17:00:00')
+        SLASchedule::create()->from('09:00:00')->to('09:01:00')
     );
 
     testTime()->freeze($time_now);
-    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(180);
 
-    $sla->addHoliday('2022-07-21');
-    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(0);
+    $sla->addHoliday('2022-07-22');
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(120);
 
     $sla->clearPausePeriods();
-    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(30);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(180);
 });
 
 it('tests superseded schedules', function () {
@@ -202,25 +202,49 @@ it('tests superseded schedules but there was a bug with which day it starts on',
             ->from('09:00:00')->to('09:00:10')->onWeekends() // 10 seconds
     );
 
+    testTime()->freeze('2022-07-24 07:00:00'); // Before Period on the 24th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(0);
+
     testTime()->freeze('2022-07-24 10:00:00'); // After Period on the 24th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(0);
+
+    testTime()->freeze('2022-07-25 07:00:00'); // Before Period on the 25th
     expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(0);
 
     testTime()->freeze('2022-07-25 10:00:00'); // After Period on the 25th
     expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(60);
 
+    testTime()->freeze('2022-07-26 07:00:00'); // Before Period on the 26th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(60);
+
     testTime()->freeze('2022-07-26 10:00:00'); // After Period on the 26th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(120);
+
+    testTime()->freeze('2022-07-27 07:00:00'); // Before Period on the 27th
     expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(120);
 
     testTime()->freeze('2022-07-27 10:00:00'); // After Period on the 27th
     expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(150);
 
+    testTime()->freeze('2022-07-28 07:00:00'); // Before Period on the 28th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(150);
+
     testTime()->freeze('2022-07-28 10:00:00'); // After Period on the 28th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(180);
+
+    testTime()->freeze('2022-07-29 07:00:00'); // Before Period on the 29th
     expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(180);
 
     testTime()->freeze('2022-07-29 10:00:00'); // After Period on the 29th
     expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(210);
 
+    testTime()->freeze('2022-07-30 07:00:00'); // Before Period on the 30th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(210);
+
     testTime()->freeze('2022-07-30 10:00:00'); // After Period on the 30th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(220);
+
+    testTime()->freeze('2022-07-31 07:00:00'); // Before Period on the 31st
     expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(220);
 
     testTime()->freeze('2022-07-31 10:00:00'); // After Period on the 31st
