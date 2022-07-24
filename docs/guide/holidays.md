@@ -30,6 +30,4 @@ $holidays = Yasumi::create('Australia', 2022);
 
 // Add each holiday in 2022 to the SLA's list of Holidays
 $sla->addHolidays($holidays->getHolidayDates());
-
-
 ```
