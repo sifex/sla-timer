@@ -7,15 +7,15 @@ the `effectiveFrom` date provided.
 ```php {9-11}
 // Create our initial schedule
 $sla = SLA::fromSchedule(
-    SLASchedule::create()->from('09:00:00')->to('17:30:00')
+    SLASchedule::create()->from('09:00:00')->to('09:01:00')
         ->everyDay()
 );
 
-// Add our new superseded schedule, only starting after 26th July 2022
+// Add our new superseded schedule, only starting after 27 July 2022
 $sla->addSchedule(
-    SLASchedule::create()->effectiveFrom('26-07-2022')
-        ->from('09:00:00')->to('17:30:00')->onWeekdays()
-        ->andFrom('10:00:00')->to('16:00:00')->onWeekends()
+    SLASchedule::create()->effectiveFrom('27-07-2022')
+        ->from('09:00:00')->to('09:00:30')->onWeekdays()->and()
+        ->from('09:00:00')->to('09:00:10')->onWeekdays()
 );
 ```
 
@@ -36,44 +36,47 @@ $sla->duration('05:35:40 25-07-2022')->totalHours; // 34
     </thead>
     <tbody>
         <tr>
-            <td class="font-bold bg-neutral-700">25th July</td>
-            <td class="text-right bg-emerald-600">60s</td>
+            <td class="font-bold dark:bg-neutral-900 bg-neutral-100">25<sup>th</sup> July</td>
+            <td class="text-right font-semibold dark:bg-emerald-600/40 bg-emerald-300/30">60s</td>
             <td class="text-right">30s</td>
         </tr>
         <tr>
-            <td class="font-bold bg-neutral-700">26th July</td>
-            <td class="text-right bg-emerald-600">60s</td>
+            <td class="font-bold dark:bg-neutral-900 bg-neutral-100">26<sup>th</sup> July</td>
+            <td class="text-right font-semibold dark:bg-emerald-600/40 bg-emerald-300/30">60s</td>
             <td class="text-right">30s</td>
         </tr>
         <tr>
-            <td class="font-bold bg-neutral-700">27th July</td>
-            <td class="text-right bg-emerald-600">60s</td>
-            <td class="text-right">30s</td>
+            <td class="font-bold dark:bg-neutral-900 bg-neutral-100">27<sup>th</sup> July</td>
+            <td class="text-right">60s</td>
+            <td class="text-right font-semibold dark:bg-emerald-600/40 bg-emerald-300/30">30s</td>
         </tr>
         <tr>
-            <td class="font-bold bg-neutral-700">28th July</td>
-            <td class="text-right bg-emerald-600">60s</td>
-            <td class="text-right">30s</td>
+            <td class="font-bold dark:bg-neutral-900 bg-neutral-100">28<sup>th</sup> July</td>
+            <td class="text-right">60s</td>
+            <td class="text-right font-semibold dark:bg-emerald-600/40 bg-emerald-300/30">30s</td>
         </tr>
         <tr>
-            <td class="font-bold bg-neutral-700">29th July</td>
-            <td class="text-right bg-emerald-600">60s</td>
-            <td class="text-right">30s</td>
+            <td class="font-bold dark:bg-neutral-900 bg-neutral-100">29<sup>th</sup> July</td>
+            <td class="text-right">60s</td>
+            <td class="text-right font-semibold dark:bg-emerald-600/40 bg-emerald-300/30">30s</td>
         </tr>
         <tr>
-            <td class="font-bold bg-neutral-700">30th July</td>
-            <td class="text-right bg-emerald-600">60s</td>
-            <td class="text-right">10s</td>
+            <td class="font-bold dark:bg-neutral-900 bg-neutral-100">30<sup>th</sup> July</td>
+            <td class="text-right">60s</td>
+            <td class="text-right font-semibold dark:bg-emerald-600/40 bg-emerald-300/30">10s</td>
         </tr>
         <tr>
-            <td class="font-bold bg-neutral-700">31st July</td>
-            <td class="text-right bg-emerald-600">60s</td>
-            <td class="text-right">10s</td>
+            <td class="font-bold dark:bg-neutral-900 bg-neutral-100">31<sup>st</sup> July</td>
+            <td class="text-right">60s</td>
+            <td class="text-right font-semibold dark:bg-emerald-600/40 bg-emerald-300/30">10s</td>
         </tr>
         <tr>
-            <td class="font-bold bg-neutral-700">Total</td>
-            <td class="text-right">420s</td>
-            <td class="text-right">170s</td>
+            <td rowspan="2" class="font-bold dark:bg-neutral-900 bg-neutral-200">Total</td>
+            <td class="text-right font-bold dark:bg-neutral-900 bg-neutral-200">120s</td>
+            <td class="text-right font-bold dark:bg-neutral-900 bg-neutral-200">110s</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="text-right font-bold dark:bg-neutral-900 bg-neutral-200">230s</td>
         </tr>
     </tbody>
 </table>

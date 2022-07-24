@@ -21,7 +21,7 @@ Before we dive in, ensure you understand what SLAs & SLA Timers are by exploring
 
 Let's set up an SLA timer similar to the schedule shown below.
 
-For this example, we're working in the week of 25th - 29th July 2022, but the library works over [as long as you want*](#disclaimers).
+For this example, we're working in the week of 25<sup>th</sup> - 29<sup>th</sup> July 2022, but the library works over [as long as you want*](#disclaimers).
 
 <script setup>
 import { withBase } from 'vitepress';

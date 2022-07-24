@@ -22,6 +22,8 @@ class SLASchedule
 
     public function effectiveFrom(string $date): self
     {
+        $this->valid_from = $date;
+
         return $this;
     }
 }

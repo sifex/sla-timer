@@ -243,7 +243,7 @@ class SLA
     {
         return collect($this->schedules)
             ->filter(function (SLASchedule $schedule) use ($day) {
-                return Carbon::parse($schedule->valid_from)->getTimestamp() < $day->getTimestamp();
+                return Carbon::parse($schedule->valid_from)->startOfDay()->getTimestamp() <= $day->getTimestamp();
             })
             ->last();
     }

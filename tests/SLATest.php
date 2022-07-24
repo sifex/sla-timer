@@ -187,6 +187,34 @@ it('tests superseded schedules', function () {
     expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(1);
 });
 
+it('tests superseded schedules but there was a bug with which day it starts on', function () {
+    $time_now = '2022-07-25 10:00:00';
+
+    // Create our initial schedule
+    $sla = SLA::fromSchedule(
+        SLASchedule::create()->from('09:00:00')->to('09:01:00') // 60 seconds
+            ->everyDay()
+    );
+
+    $sla->addSchedule(
+        SLASchedule::create()->effectiveFrom('27-07-2022')
+            ->from('09:00:00')->to('09:00:30')->onWeekdays()->and() // 30 seconds
+            ->from('09:00:00')->to('09:00:10')->onWeekends() // 10 seconds
+    );
+
+    testTime()->freeze('2022-07-24 10:00:00'); // After Period on the 24th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(0);
+
+    testTime()->freeze('2022-07-25 10:00:00'); // After Period on the 25th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(60);
+
+    testTime()->freeze('2022-07-26 10:00:00'); // After Period on the 26th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(120);
+
+    testTime()->freeze('2022-07-27 10:00:00'); // After Period on the 27th
+    expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(150);
+});
+
 //it('tests 0 length SLAs', function () {
 //    $subject_start_time = '2022-07-21 08:59:00';
 //    $time_now = '2022-07-21 09:00:30';
