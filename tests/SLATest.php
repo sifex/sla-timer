@@ -37,7 +37,7 @@ it('tests the SLA across a short duration', function () {
 });
 
 it('tests the SLA across a long duration', function () {
-    $subject_start_time = '2022-06-17 08:59:00';
+    $subject_start_time = '2021-06-17 08:59:00';
     $time_now = '2022-07-17 09:00:30';
 
     $sla = SLA::fromSchedule(

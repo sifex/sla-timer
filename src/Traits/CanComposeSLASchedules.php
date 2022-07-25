@@ -1,6 +1,6 @@
 <?php
 
-namespace Sifex\SlaTimer\Trai;
+namespace Sifex\SlaTimer\Traits;
 
 use Sifex\SlaTimer\Agenda\Weekly;
 use Sifex\SlaTimer\Interfaces\AgendaInterface;
