@@ -16,7 +16,7 @@ export default {
     lastUpdated: true,
     themeConfig: {
         nav: [
-            { text: 'Guide', link: '/guide/introduction' },
+            { text: 'Guide', link: '/guide/getting_started' },
         ],
         logo: '/images/small_logo.svg',
         sidebar: [
