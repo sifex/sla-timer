@@ -1,10 +1,10 @@
 <?php
 
-namespace Sifex\SlaTimer\Trai;
+namespace Sifex\SlaTimer\Interfaces;
 
 use Carbon\CarbonPeriod;
 
-interface IsAnAgenda
+interface AgendaInterface
 {
     /**
      * @param  CarbonPeriod  $subject_period

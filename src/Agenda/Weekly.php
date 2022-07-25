@@ -1,13 +1,13 @@
 <?php
 
-namespace Sifex\SlaTimer\Agendas;
+namespace Sifex\SlaTimer\Agenda;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
-use Sifex\SlaTimer\Trai\IsAnAgenda;
+use Sifex\SlaTimer\Interfaces\AgendaInterface;
 
-class Weekly implements IsAnAgenda
+class Weekly implements AgendaInterface
 {
     /** @var string[] */
     private array $time_periods = [];

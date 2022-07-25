@@ -8,7 +8,7 @@ use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
 use Cmixin\EnhancedPeriod;
 use ReflectionException;
-use Sifex\SlaTimer\Trai\IsAnAgenda;
+use Sifex\SlaTimer\Interfaces\AgendaInterface;
 
 class SLA
 {
@@ -215,7 +215,7 @@ class SLA
     private function recalculate_sla_periods(CarbonInterface $from, CarbonInterface $to): array
     {
         return collect($this->get_enabled_schedule_for_day($from)->agendas)
-            ->flatMap(fn (IsAnAgenda $a) => $a->toPeriods(CarbonPeriod::create($from, $to)))
+            ->flatMap(fn (AgendaInterface $a) => $a->toPeriods(CarbonPeriod::create($from, $to)))
             ->toArray();
     }
 

@@ -2,21 +2,22 @@
 
 namespace Sifex\SlaTimer\Trai;
 
-use Sifex\SlaTimer\Agendas\Weekly;
+use Sifex\SlaTimer\Agenda\Weekly;
+use Sifex\SlaTimer\Interfaces\AgendaInterface;
 use Sifex\SlaTimer\SLASchedule;
 
 trait CanComposeSLASchedules
 {
     private int $agenda_index = 0;
 
-    /** @var IsAnAgenda[] */
+    /** @var AgendaInterface[] */
     public array $agendas = [
 
     ];
 
     private string $temporary_from_value;
 
-    private function get_current_agenda(): IsAnAgenda
+    private function get_current_agenda(): AgendaInterface
     {
         // Get the existing one at that index or create a brand-new period
         return array_key_exists($this->agenda_index, $this->agendas)
