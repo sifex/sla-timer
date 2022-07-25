@@ -18,7 +18,7 @@
     "require": {
         "php": "^8.0",
         "cmixin/enhanced-period": "^1.2",
-        "illuminate/collections": "^9.20",
+        "illuminate/collections": "^8|^9|^10|^11",
         "nesbot/carbon": "^2",
         "spatie/period": "^2"
     },
@@ -43,7 +43,6 @@
     "scripts": {
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest--coverage-clover clover.xml"
-
     },
     "config": {
         "allow-plugins": {

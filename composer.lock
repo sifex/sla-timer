@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5de6856ea2bbeb90adce695f500c4c9",
+    "content-hash": "b2dfbd8bacc5c3c41d4a7884e2e97d6f",
     "packages": [
         {
             "name": "cmixin/enhanced-period",
@@ -4234,5 +4234,5 @@
         "php": "^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
