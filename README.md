@@ -57,7 +57,7 @@ We can define out breaches by calling the `addBreaches` method on our SLA
 
 ```php
 /**
- * Define two breaches, one at 45 minutes, and the next at 24 hours
+ * Define two breaches, one at 24 hours, and the next at 100 hours
  */
 $sla->addBreaches([
     new SLABreach('First Response', '24h'),
