@@ -30,7 +30,8 @@ let want_job = ref(false)
 <div class="px-6 sm:px-12 lg:px-16">
   <div class="container" style="max-width: 1152px; margin: 0 auto; text-align: center; padding: 40px 0;">
       <a href="https://twitter.com/sifex/status/1548374115815346178">
-          <img @load="want_job = true" src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring.svg?" alt="Hi, I'm Alex & I'm currently looking for a Laravel job. Please reach out to me via twitter, or click this link." height="49">
+          <img class="hidden lg:show" @load="want_job = true" src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring.svg?" alt="Hi, I'm Alex & I'm currently looking for a Laravel job. Please reach out to me via twitter, or click this link." height="49">
+          <img class="" @load="want_job = true" src="https://github.com/sifex/sla-timer/raw/HEAD/.github/assets/hiring_smol.svg?" alt="Hi, I'm Alex & I'm currently looking for a Laravel job. Please reach out to me via twitter, or click this link." height="49">
       </a>
       <div v-if="!want_job" class="rounded-xl bg-slate-200 animate-pulse flex space-x-4" style="max-width: 895px; aspect-ratio: 895 / 49;"></div>
   </div>
