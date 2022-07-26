@@ -10,10 +10,10 @@ use Sifex\SlaTimer\Interfaces\AgendaInterface;
 class Weekly implements AgendaInterface
 {
     /** @var string[] */
-    private array $time_periods = [];
+    public array $time_periods = [];
 
     /** @var string[] */
-    private array $days = [];
+    public array $days = [];
 
     public function addTimePeriod(string $start_time, string $end_time): Weekly
     {
