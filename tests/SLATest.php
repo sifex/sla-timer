@@ -251,6 +251,26 @@ it('tests superseded schedules but there was a bug with which day it starts on',
     expect($sla->duration('2022-07-25 08:59:00')->totalSeconds)->toEqual(230);
 });
 
+it('tests adding multiple schedules through the constructor', function () {
+    SLA::fromSchedules([
+        SLASchedule::create()->from('09:00:00')->to('09:01:00') // 60 seconds
+        ->everyDay(),
+        SLASchedule::create()->effectiveFrom('27-07-2022')
+            ->from('09:00:00')->to('09:00:30')->onWeekdays()->and() // 30 seconds
+            ->from('09:00:00')->to('09:00:10')->onWeekends(), // 10 seconds
+    ]);
+
+    (new SLA([
+        SLASchedule::create()->from('09:00:00')->to('09:01:00') // 60 seconds
+        ->everyDay(),
+        SLASchedule::create()->effectiveFrom('27-07-2022')
+            ->from('09:00:00')->to('09:00:30')->onWeekdays()->and() // 30 seconds
+            ->from('09:00:00')->to('09:00:10')->onWeekends(), // 10 seconds
+    ]));
+
+    $this->expectNotToPerformAssertions();
+});
+
 //it('tests 0 length SLAs', function () {
 //    $subject_start_time = '2022-07-21 08:59:00';
 //    $time_now = '2022-07-21 09:00:30';

@@ -34,15 +34,15 @@ class SLA
     private array $pause_periods = [];
 
     /**
-     * @param  SLASchedule  $schedule
+     * @param  SLASchedule|array  $schedules
      *
      * @throws ReflectionException
      */
-    public function __construct(SLASchedule $schedule)
+    public function __construct(SLASchedule|array $schedules)
     {
         CarbonPeriod::mixin(EnhancedPeriod::class);
 
-        $this->addSchedule($schedule);
+        collect([$schedules])->flatten()->each(fn ($b) => $this->addSchedule($b));
     }
 
     public function addBreach(SLABreach $breach): self
@@ -54,7 +54,7 @@ class SLA
 
     public function addBreaches(...$breaches): self
     {
-        collect($breaches)->flatten()->each(fn ($b) => $this->addBreach($b));
+        collect([$breaches])->flatten()->each(fn ($b) => $this->addBreach($b));
 
         return $this;
     }
@@ -82,7 +82,7 @@ class SLA
 
     public function addHolidays($dates): self
     {
-        collect($dates)->flatten()->each(fn ($d) => $this->addHoliday($d));
+        collect([$dates])->flatten()->each(fn ($d) => $this->addHoliday($d));
 
         return $this;
     }
@@ -95,6 +95,11 @@ class SLA
     }
 
     public static function fromSchedule(SLASchedule $definition): self
+    {
+        return new self($definition);
+    }
+
+    public static function fromSchedules(SLASchedule|array $definition): self
     {
         return new self($definition);
     }
