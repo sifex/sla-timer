@@ -271,6 +271,26 @@ it('tests adding multiple schedules through the constructor', function () {
     $this->expectNotToPerformAssertions();
 });
 
+it('tests empty agenda', function () {
+    $subject_start_time = '2022-07-17 08:59:00';
+    $time_now = '2022-07-17 09:00:30';
+
+    $sla = SLA::fromSchedule(SLASchedule::create());
+
+    testTime()->freeze($time_now);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(0);
+});
+
+it('tests empty schedule', function () {
+    $subject_start_time = '2022-07-17 08:59:00';
+    $time_now = '2022-07-17 09:00:30';
+
+    $sla = (new SLA([]));
+
+    testTime()->freeze($time_now);
+    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(0);
+});
+
 //it('tests 0 length SLAs', function () {
 //    $subject_start_time = '2022-07-21 08:59:00';
 //    $time_now = '2022-07-21 09:00:30';
