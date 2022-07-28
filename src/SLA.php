@@ -42,7 +42,7 @@ class SLA
     {
         CarbonPeriod::mixin(EnhancedPeriod::class);
 
-        collect([$schedules])->flatten()->each(function ($b) {
+        collect([$schedules])->flatten(2)->each(function ($b) {
             $this->addSchedule($b);
         })->whenEmpty(function () {
             $this->addSchedule(SLASchedule::create());
@@ -58,7 +58,7 @@ class SLA
 
     public function addBreaches(...$breaches): self
     {
-        collect([$breaches])->flatten()->each(fn ($b) => $this->addBreach($b));
+        collect([$breaches])->flatten(2)->each(fn ($b) => $this->addBreach($b));
 
         return $this;
     }
@@ -86,7 +86,7 @@ class SLA
 
     public function addHolidays($dates): self
     {
-        collect([$dates])->flatten()->each(fn ($d) => $this->addHoliday($d));
+        collect([$dates])->flatten(2)->each(fn ($d) => $this->addHoliday($d));
 
         return $this;
     }
