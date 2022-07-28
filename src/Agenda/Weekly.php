@@ -24,7 +24,7 @@ class Weekly implements AgendaInterface
 
     public function addTimePeriods(...$periods): Weekly
     {
-        collect($periods)->flatten(2)->each(function ($period) {
+        collect([$periods])->flatten()->each(function ($period) {
             $this->addTimePeriod($period[0], $period[1]);
         });
 
