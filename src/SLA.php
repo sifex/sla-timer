@@ -44,7 +44,7 @@ class SLA
 
         collect([$schedules])->flatten()->each(function ($b) {
             $this->addSchedule($b);
-        })->whenEmpty(function() {
+        })->whenEmpty(function () {
             $this->addSchedule(SLASchedule::create());
         });
     }
