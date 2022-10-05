@@ -291,7 +291,6 @@ class SLA
     private function filter_in_days_of_week_in_schedule(Carbon $date): bool
     {
         foreach ($this->schedules as $schedule) {
-
             // TODO add a start validity here
 
             foreach ($schedule->agendas as $agenda) {
