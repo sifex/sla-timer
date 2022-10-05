@@ -10,8 +10,8 @@ An **SLA timer** is used to keep on top of things like "time-to-first-action", "
 
 Examples of some time-based SLAs you can measure are:
 
-1. Respond to all requests within 2 hours.
-2. Resolve high-priority requests within 24 hours.
+1. Respond to all requests within 2 days.
+2. Resolve all high-priority requests within 18 hours.
 
 ## 👾 How are SLAs calculated?
 
