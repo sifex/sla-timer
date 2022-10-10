@@ -15,7 +15,7 @@ Examples of some time-based SLAs you can measure are:
 
 ## 👾 How are SLAs calculated?
 
-First our SLA requires a schedule to operate over. We might want to start counting up whenever a support ticket should be being actions or addressed. This will usually look similar to below if we're dealing with the usual 9-5.  
+First our SLA requires a schedule to operate over. We might want to start counting up whenever a support ticket should be being actiond or addressed. This will usually look similar to below if we're dealing with the usual 9-5.  
 
 <a :href="withBase('/images/sla_gaps_light.svg')" class="lg:-mx-16 my-16 lg:my-24 xl:my-32 block">
     <img :src="withBase('/images/sla_gaps_dark.svg')" alt="SLA Gaps" class="w-full hidden dark:block">
