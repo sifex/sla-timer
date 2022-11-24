@@ -10,13 +10,13 @@ class SLAHoliday extends SLAPause
     /**
      * Used more for Pausing an SLA
      *
-     * @return CarbonPeriod
+     * @return \DatePeriod
      */
-    public function toPeriod(): CarbonPeriod
+    public function toPeriod(): \DatePeriod
     {
         return CarbonPeriod::create(
             Carbon::parse($this->start_time)->startOfDay(),
             Carbon::parse($this->end_time ?? $this->start_time)->endOfDay(),
-        );
+        )->toDatePeriod();
     }
 }

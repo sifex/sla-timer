@@ -113,9 +113,9 @@ class SLA
         return $this->calculate($started_at, $stopped_at);
     }
 
-    public function duration(string $started_at, string $stopped_at = null): CarbonInterval
+    public function duration(string $started_at, string $stopped_at = null): \DateInterval
     {
-        return $this->calculate($started_at, $stopped_at)->interval;
+        return $this->calculate($started_at, $stopped_at)->interval->toDateInterval();
     }
 
     /**
@@ -233,13 +233,13 @@ class SLA
      *
      * @param $subject_start_time
      * @param $end_date_time
-     * @return CarbonPeriod
+     * @return \DatePeriod
      */
-    private function get_current_duration($subject_start_time, $end_date_time): CarbonPeriod
+    private function get_current_duration($subject_start_time, $end_date_time): \DatePeriod
     {
         return CarbonPeriod::create($subject_start_time, $end_date_time)
             ->setDateInterval(CarbonInterval::day(1))
-            ->addFilter(fn (Carbon $date) => self::filter_out_excluded_dates($date));
+            ->addFilter(fn (Carbon $date) => self::filter_out_excluded_dates($date))->toDatePeriod();
     }
 
     /**
@@ -261,25 +261,25 @@ class SLA
      * Turns a single period into an interval
      *
      * @param $period
-     * @return CarbonInterval
+     * @return \DateInterval
      */
-    private static function calculate_interval($period): CarbonInterval
+    private static function calculate_interval($period): \DateInterval
     {
-        return CarbonInterval::seconds($period->end->getTimestamp() - $period->start->getTimestamp());
+        return CarbonInterval::seconds($period->end->getTimestamp() - $period->start->getTimestamp())->toDateInterval();
     }
 
     /**
      * Combines two different intervals
      *
      * @param  array  $intervals
-     * @return CarbonInterval
+     * @return \DateInterval
      */
-    private static function combine_intervals(array $intervals): CarbonInterval
+    private static function combine_intervals(array $intervals): \DateInterval
     {
         return collect($intervals)
             ->reduce(function (CarbonInterval $i, CarbonInterval $overlapping_period) {
                 return $i->add($overlapping_period->cascade())->cascade();
-            }, CarbonInterval::seconds(0));
+            }, CarbonInterval::seconds(0))->toDateInterval();
     }
 
     /**
