@@ -34,8 +34,6 @@ class SLA
     private array $pause_periods = [];
 
     /**
-     * @param  SLASchedule|array  $schedules
-     *
      * @throws ReflectionException
      */
     public function __construct(SLASchedule|array $schedules)
@@ -108,18 +106,17 @@ class SLA
         return new self($definition);
     }
 
-    public function status(string $started_at, string $stopped_at = null): SLAStatus
+    public function status(string $started_at, ?string $stopped_at = null): SLAStatus
     {
         return $this->calculate($started_at, $stopped_at);
     }
 
-    public function duration(string $started_at, string $stopped_at = null): CarbonInterval
+    public function duration(string $started_at, ?string $stopped_at = null): CarbonInterval
     {
         return $this->calculate($started_at, $stopped_at)->interval;
     }
 
     /**
-     * @param  string  $started_at
      * @return SLABreach[]
      */
     public function breaches(string $started_at): array
@@ -230,10 +227,6 @@ class SLA
 
     /**
      * Gets the current subject duration, sets the interval to 1d and filters out anything we don't want
-     *
-     * @param $subject_start_time
-     * @param $end_date_time
-     * @return CarbonPeriod
      */
     private function get_current_duration($subject_start_time, $end_date_time): CarbonPeriod
     {
@@ -246,7 +239,6 @@ class SLA
      * Gets the enabled schedule for any given day
      *
      * @param  Carbon  $day
-     * @return SLASchedule
      */
     private function get_enabled_schedule_for_day(CarbonInterface $day): SLASchedule
     {
@@ -259,9 +251,6 @@ class SLA
 
     /**
      * Turns a single period into an interval
-     *
-     * @param $period
-     * @return CarbonInterval
      */
     private static function calculate_interval($period): CarbonInterval
     {
@@ -270,9 +259,6 @@ class SLA
 
     /**
      * Combines two different intervals
-     *
-     * @param  array  $intervals
-     * @return CarbonInterval
      */
     private static function combine_intervals(array $intervals): CarbonInterval
     {
@@ -284,9 +270,6 @@ class SLA
 
     /**
      * Filter only the days of the week in the schedule
-     *
-     * @param  Carbon  $date
-     * @return bool
      */
     private function filter_in_days_of_week_in_schedule(Carbon $date): bool
     {
@@ -303,9 +286,6 @@ class SLA
 
     /**
      * Filter out any excluded dates
-     *
-     * @param  Carbon  $date
-     * @return bool
      */
     private static function filter_out_excluded_dates(Carbon $date): bool
     {

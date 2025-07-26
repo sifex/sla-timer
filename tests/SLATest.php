@@ -4,6 +4,7 @@ use Carbon\CarbonInterval;
 use Sifex\SlaTimer\SLA;
 use Sifex\SlaTimer\SLABreach;
 use Sifex\SlaTimer\SLASchedule;
+
 use function Spatie\PestPluginTestTime\testTime;
 
 /**
@@ -254,7 +255,7 @@ it('tests superseded schedules but there was a bug with which day it starts on',
 it('tests adding multiple schedules through the constructor', function () {
     SLA::fromSchedules([
         SLASchedule::create()->from('09:00:00')->to('09:01:00') // 60 seconds
-        ->everyDay(),
+            ->everyDay(),
         SLASchedule::create()->effectiveFrom('27-07-2022')
             ->from('09:00:00')->to('09:00:30')->onWeekdays()->and() // 30 seconds
             ->from('09:00:00')->to('09:00:10')->onWeekends(), // 10 seconds
@@ -262,7 +263,7 @@ it('tests adding multiple schedules through the constructor', function () {
 
     (new SLA([
         SLASchedule::create()->from('09:00:00')->to('09:01:00') // 60 seconds
-        ->everyDay(),
+            ->everyDay(),
         SLASchedule::create()->effectiveFrom('27-07-2022')
             ->from('09:00:00')->to('09:00:30')->onWeekdays()->and() // 30 seconds
             ->from('09:00:00')->to('09:00:10')->onWeekends(), // 10 seconds
@@ -291,7 +292,7 @@ it('tests empty schedule', function () {
     expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(0);
 });
 
-//it('tests 0 length SLAs', function () {
+// it('tests 0 length SLAs', function () {
 //    $subject_start_time = '2022-07-21 08:59:00';
 //    $time_now = '2022-07-21 09:00:30';
 //
@@ -308,4 +309,4 @@ it('tests empty schedule', function () {
 //    );
 //
 //    expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(1);
-//});
+// });

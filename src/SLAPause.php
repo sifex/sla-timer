@@ -19,8 +19,6 @@ class SLAPause
 
     /**
      * Used more for Pausing an SLA
-     *
-     * @return CarbonPeriod
      */
     public function toPeriod(): CarbonPeriod
     {
@@ -32,8 +30,6 @@ class SLAPause
 
     /**
      * Used more for Holidays
-     *
-     * @return CarbonPeriod
      */
     public function toDayPeriod(): CarbonPeriod
     {

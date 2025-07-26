@@ -22,12 +22,12 @@ trait CanComposeSLASchedules
         // Get the existing one at that index or create a brand-new period
         return array_key_exists($this->agenda_index, $this->agendas)
             ? $this->agendas[$this->agenda_index]
-            : $this->agendas[] = new Weekly();
+            : $this->agendas[] = new Weekly;
     }
 
     public static function create(): self
     {
-        return new self();
+        return new self;
     }
 
     public function and(): self
@@ -55,7 +55,7 @@ trait CanComposeSLASchedules
     public function to(string $to): self
     {
         if (! $this->temporary_from_value) {
-//            throw new SLAException('You haven\'t set a from value');
+            //            throw new SLAException('You haven\'t set a from value');
         }
 
         $this->get_current_agenda()->addTimePeriod(
