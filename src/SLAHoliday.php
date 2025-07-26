@@ -9,8 +9,6 @@ class SLAHoliday extends SLAPause
 {
     /**
      * Used more for Pausing an SLA
-     *
-     * @return CarbonPeriod
      */
     public function toPeriod(): CarbonPeriod
     {

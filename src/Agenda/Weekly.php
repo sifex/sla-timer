@@ -54,7 +54,6 @@ class Weekly implements AgendaInterface
      * we need to generate a full number of periods surrounding/covering our subject period, because Carbon is not
      * capable of generating a full infinite series of 'Fridays 9am to 5pm', so we have to do the heavy lifting for it
      *
-     * @param  CarbonPeriod  $subject_period
      * @return CarbonPeriod[]
      */
     public function toPeriods(CarbonPeriod $subject_period): array
@@ -70,17 +69,15 @@ class Weekly implements AgendaInterface
             })
             ->flatMap(function (Carbon $day) {
                 return collect($this->time_periods)
-                ->map(function (array $t) use ($day) {
-                    return CarbonPeriod::create(
-                        $day->clone()->setTimeFromTimeString($t[0]),
-                        '1 second',
-                        $day->clone()->setTimeFromTimeString($t[1]),
-                    );
-                });
+                    ->map(function (array $t) use ($day) {
+                        return CarbonPeriod::create(
+                            $day->clone()->setTimeFromTimeString($t[0]),
+                            '1 second',
+                            $day->clone()->setTimeFromTimeString($t[1]),
+                        );
+                    });
             })->toArray();
     }
 
-    public function getPeriods(CarbonPeriod $subject_period)
-    {
-    }
+    public function getPeriods(CarbonPeriod $subject_period) {}
 }

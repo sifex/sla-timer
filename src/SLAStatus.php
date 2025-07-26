@@ -9,7 +9,6 @@ class SLAStatus
     /** @var SLABreach[] */
     public array $breaches = [];
 
-    /** @var CarbonInterval */
     public CarbonInterval $interval;
 
     public function __construct($breaches, $interval)

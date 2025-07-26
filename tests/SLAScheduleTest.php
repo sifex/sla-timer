@@ -4,9 +4,9 @@ use Carbon\CarbonPeriod;
 use Cmixin\EnhancedPeriod;
 use Sifex\SlaTimer\SLASchedule;
 
-//beforeEach(function () {
+// beforeEach(function () {
 //    CarbonPeriod::mixin(EnhancedPeriod::class);
-//});
+// });
 
 /**
  * Daily Periods
