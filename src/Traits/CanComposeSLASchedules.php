@@ -22,12 +22,12 @@ trait CanComposeSLASchedules
         // Get the existing one at that index or create a brand-new period
         return array_key_exists($this->agenda_index, $this->agendas)
             ? $this->agendas[$this->agenda_index]
-            : $this->agendas[] = new Weekly();
+            : $this->agendas[] = new Weekly;
     }
 
     public static function create(): self
     {
-        return new self();
+        return new self;
     }
 
     public function and(): self

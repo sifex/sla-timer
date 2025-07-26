@@ -79,7 +79,5 @@ class Weekly implements AgendaInterface
             })->toArray();
     }
 
-    public function getPeriods(CarbonPeriod $subject_period)
-    {
-    }
+    public function getPeriods(CarbonPeriod $subject_period) {}
 }
