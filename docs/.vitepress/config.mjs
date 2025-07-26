@@ -1,3 +1,5 @@
+import tailwindcss from '@tailwindcss/vite'
+
 export default {
     title: 'SLA Timer',
     base: '/sla-timer/',
@@ -46,5 +48,10 @@ export default {
         socialLinks: [
             { icon: 'github', link: 'https://github.com/sifex/sla-timer' },
         ],
+    },
+    vite: {
+        plugins: [
+            tailwindcss()
+        ]
     }
 }

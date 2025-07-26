@@ -14,3 +14,4 @@ docs/.vitepress/dist/
 cachegrind.out.18991.gz
 .DS_Store
 *.gz
+/docs/.vitepress/cache/

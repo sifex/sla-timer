@@ -18,8 +18,8 @@ Examples of some time-based SLAs you can measure are:
 First our SLA requires a schedule to operate over. We might want to start counting up whenever a support ticket should be being actiond or addressed. This will usually look similar to below if we're dealing with the usual 9-5.  
 
 <a :href="withBase('/images/sla_gaps_light.svg')" class="lg:-mx-16 my-16 lg:my-24 xl:my-32 block">
-    <img :src="withBase('/images/sla_gaps_dark.svg')" alt="SLA Gaps" class="w-full hidden dark:block">
-    <img :src="withBase('/images/sla_gaps_light.svg')" alt="SLA Gaps" class="w-full dark:hidden">
+    <img :src="withBase('/images/sla_gaps_dark.svg')" alt="SLA Gaps" class="w-full hidden! dark:block!">
+    <img :src="withBase('/images/sla_gaps_light.svg')" alt="SLA Gaps" class="w-full dark:hidden!">
 </a>
 
 **SLA Timers** operate by calculating the period over which our **"Subject"** has crossed over our defined SLA schedule.
@@ -34,8 +34,8 @@ import { withBase } from 'vitepress';
 
 
 <a :href="withBase('/images/sla_basic_light.svg')" class="lg:-mx-16 my-16 lg:my-24 xl:my-32 block">
-    <img :src="withBase('/images/sla_basic_dark.svg')" alt="SLA Basics" class="w-full hidden dark:block">
-    <img :src="withBase('/images/sla_basic_light.svg')" alt="SLA Basics" class="w-full dark:hidden">
+    <img :src="withBase('/images/sla_basic_dark.svg')" alt="SLA Basics" class="w-full hidden! dark:block!">
+    <img :src="withBase('/images/sla_basic_light.svg')" alt="SLA Basics" class="w-full dark:hidden!">
 </a>
 
 Our **"Elapsed"** time is currently at `36 hours`. If we define two target periods within our SLA, we can calculate whether any of our targets have been met – or if they haven't – whether any targets have been **"Breached"**.

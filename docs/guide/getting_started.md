@@ -28,8 +28,8 @@ import { withBase } from 'vitepress';
 </script>
 
 <a :href="withBase('/images/sla_desc_light.svg')" class="lg:-mx-16 my-16 lg:my-24 xl:my-32 block">
-    <img :src="withBase('/images/sla_desc_dark.svg')" alt="SLA Diagram – Showing the periods of approx. 9am to 5pm covered each week day " class="w-full hidden dark:block">
-    <img :src="withBase('/images/sla_desc_light.svg')" alt="SLA Diagram – Showing the periods of approx. 9am to 5pm covered each week day " class="w-full dark:hidden">
+    <img :src="withBase('/images/sla_desc_dark.svg')" alt="SLA Diagram – Showing the periods of approx. 9am to 5pm covered each week day " class="w-full hidden! dark:block!">
+    <img :src="withBase('/images/sla_desc_light.svg')" alt="SLA Diagram – Showing the periods of approx. 9am to 5pm covered each week day " class="w-full dark:hidden!">
 </a>
 
 To create a new SLA Timer, we can start by defining our SLA Schedule:

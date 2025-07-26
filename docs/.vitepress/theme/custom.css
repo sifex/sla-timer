@@ -1,12 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source '/docs/**/*.md';
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-    --vp-c-brand: #ff7055;
-    --vp-c-brand-light: #ff866d;
-    --vp-c-brand-lighter: #ff8b75;
-    --vp-c-brand-dark: #d55f48;
+    --vp-c-brand-1: #ff7055;
+    --vp-c-brand-2: #ff866d;
+    --vp-c-brand-3: #ff8b75;
+    --vp-c-brand-soft: #ffe4e3;
+}
+
+.dark {
+    --vp-c-brand-soft: #623b37;
 }
 
 html, body {
