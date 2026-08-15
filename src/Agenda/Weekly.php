@@ -81,12 +81,17 @@ class Weekly implements AgendaInterface
             })
             ->flatMap(function (CarbonInterface $day) {
                 return collect($this->time_periods)
-                    ->map(function (array $t) use ($day) {
-                        return CarbonPeriod::create(
-                            $day->clone()->setTimeFromTimeString($t[0]),
-                            '1 second',
-                            $day->clone()->setTimeFromTimeString($t[1]),
-                        );
+                    ->flatMap(function (array $t) use ($day) {
+                        $start = $day->clone()->setTimeFromTimeString($t[0]);
+                        $end = $day->clone()->setTimeFromTimeString($t[1]);
+
+                        if ($end->lessThanOrEqualTo($start)) {
+                            // Overnight period: keep it as a single period spanning midnight, the
+                            // daily overlap logic in SLA::calculate clips it per day
+                            return [CarbonPeriod::create($start, '1 second', $end->clone()->addDay())];
+                        }
+
+                        return [CarbonPeriod::create($start, '1 second', $end)];
                     });
             })->toArray();
     }
