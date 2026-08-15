@@ -12,3 +12,21 @@ $sla = SLA::fromSchedule(
         ->from('23:00:00')->to('23:30:00')->everyDay()
 );
 ```
+
+## Overnight Schedules
+
+Schedules that cross midnight are supported. A window whose end time is earlier than its start time
+carries over into the next day:
+
+```php
+// Covers 22:00 -> midnight, then midnight -> 02:00 the next day
+SLASchedule::create()->from('22:00:00')->to('02:00:00')->everyDay()
+```
+
+A full 24 hour day can be expressed by using the same time for `from` and `to`:
+
+```php
+// 24/7 coverage
+SLASchedule::create()->from('09:00:00')->to('09:00:00')->everyDay()
+```
+

@@ -2,12 +2,15 @@
 
 namespace Sifex\SlaTimer\Interfaces;
 
+use Carbon\CarbonInterface;
 use Carbon\CarbonPeriod;
 
 interface AgendaInterface
 {
     /**
-     * @return CarbonPeriod[]
+     * Returns the agenda periods for the subject period as start/end pairs.
+     *
+     * @return array<int, array{0: CarbonInterface, 1: CarbonInterface}>
      */
     public function toPeriods(CarbonPeriod $subject_period): array;
 
