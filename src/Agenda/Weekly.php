@@ -61,7 +61,7 @@ class Weekly implements AgendaInterface
      * we need to generate a full number of periods surrounding/covering our subject period, because Carbon is not
      * capable of generating a full infinite series of 'Fridays 9am to 5pm', so we have to do the heavy lifting for it
      *
-     * @return CarbonPeriod[]
+     * @return array<int, array{0: CarbonInterface, 1: CarbonInterface}>
      */
     public function toPeriods(CarbonPeriod $subject_period): array
     {
@@ -88,10 +88,10 @@ class Weekly implements AgendaInterface
                         if ($end->lessThanOrEqualTo($start)) {
                             // Overnight period: keep it as a single period spanning midnight, the
                             // daily overlap logic in SLA::calculate clips it per day
-                            return [CarbonPeriod::create($start, '1 second', $end->clone()->addDay())];
+                            return [[$start, $end->clone()->addDay()]];
                         }
 
-                        return [CarbonPeriod::create($start, '1 second', $end)];
+                        return [[$start, $end]];
                     });
             })->toArray();
     }

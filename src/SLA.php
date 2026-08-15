@@ -140,10 +140,20 @@ class SLA
         $subject_start = Carbon::parse($subject_start_time);
         $subject_end = Carbon::parse($subject_stop_time ?? Carbon::now());
 
+        $subject_start_ts = $subject_start->getTimestamp();
+        $subject_end_ts = $subject_end->getTimestamp();
+
         $main_target_period = $this->get_current_duration($subject_start, $subject_end);
 
         // TODO End period should just be up until the next schedule is made
         $sla_periods = $this->recalculate_sla_periods($subject_start, $subject_end);
+
+        $schedule_valid_from_unixes = array_map(
+            fn (SLASchedule $schedule) => Carbon::parse($schedule->valid_from)->startOfDay()->unix(),
+            $this->schedules
+        );
+
+        $default_schedule = SLASchedule::create();
 
         $pause_periods = collect($this->pause_periods)
             ->map(fn (SLAPause $pp) => $pp->toPeriod()->setDateInterval(CarbonInterval::seconds()))
@@ -153,30 +163,40 @@ class SLA
 
         $sla_cursor = 0;
         $pause_cursor = 0;
+        $enabled_schedule = null;
+        $last_enabled_schedule = null;
+        $valid_from_unix = null;
+        $total_seconds = 0;
 
-        // Iterate over the period
-        $total_seconds = collect(iterator_to_array($main_target_period))->map(function (Carbon $daily_subject_period) use ($subject_start, $subject_end, &$sla_periods, &$sla_cursor, $pause_periods, &$pause_cursor) {
-            /**
-             * After we've divided each day, find where the start and end times are by min/max'ing them
-             */
-            $start_of_day = max($subject_start->clone(), $daily_subject_period->clone());
-            $end_of_day = min($subject_end->clone(), $daily_subject_period->clone()->addHours(24));
-
-            $day_start_ts = $start_of_day->getTimestamp();
-            $day_end_ts = $end_of_day->getTimestamp();
+        // Iterate over the period, one day at a time. Each day is anchored at the start of
+        // day, so its bounds and the schedule lookups only need integer timestamps.
+        foreach ($main_target_period as $daily) {
+            $daily_ts = $daily->getTimestamp();
+            $day_start_ts = max($subject_start_ts, $daily_ts);
+            $day_end_ts = min($subject_end_ts, $daily_ts + 86400);
 
             /**
              * Grab the enabled schedule, compare this every day to see if we now have a schedule that would
              * supersede it.
              */
-            $enabled_schedule = $this->get_enabled_schedule_for_day($start_of_day);
+            $enabled_schedule = $default_schedule;
+            foreach ($this->schedules as $index => $schedule) {
+                if ($schedule_valid_from_unixes[$index] <= $daily_ts) {
+                    $enabled_schedule = $schedule;
+                }
+            }
+
+            if ($enabled_schedule !== $last_enabled_schedule) {
+                $last_enabled_schedule = $enabled_schedule;
+                $valid_from_unix = Carbon::parse($enabled_schedule->valid_from)->startOfDay()->unix();
+            }
 
             /**
              * Deduplicate our SLA Periods
              * Why do this here? Mostly because of superseded schedules...
              */
-            if ($start_of_day->clone()->startOfDay()->unix() === Carbon::parse($enabled_schedule->valid_from)->clone()->startOfDay()->unix()) {
-                $sla_periods = $this->recalculate_sla_periods($start_of_day, $subject_end);
+            if ($daily_ts === $valid_from_unix) {
+                $sla_periods = $this->recalculate_sla_periods($daily, $subject_end);
                 $sla_cursor = 0;
             }
 
@@ -188,23 +208,17 @@ class SLA
              * cursor sweeps them without rescanning the whole list for every day.
              */
             $sla_count = count($sla_periods);
-            while ($sla_cursor < $sla_count && ($sla_periods[$sla_cursor]->end === null || $sla_periods[$sla_cursor]->end->getTimestamp() <= $day_start_ts)) {
+            while ($sla_cursor < $sla_count && $sla_periods[$sla_cursor][1]->getTimestamp() <= $day_start_ts) {
                 $sla_cursor++;
             }
 
             $day_sla_periods = [];
             for ($i = $sla_cursor; $i < $sla_count; $i++) {
-                $period = $sla_periods[$i];
-
-                if ($period->start === null || $period->end === null) {
-                    continue;
-                }
-
-                if ($period->start->getTimestamp() >= $day_end_ts) {
+                if ($sla_periods[$i][0]->getTimestamp() >= $day_end_ts) {
                     break;
                 }
 
-                $day_sla_periods[] = $period;
+                $day_sla_periods[] = $sla_periods[$i];
             }
 
             /**
@@ -215,13 +229,9 @@ class SLA
              * building CarbonPeriod objects and diffing them via spatie/period.
              */
             $coverage = [];
-            foreach ($day_sla_periods as $period) {
-                if ($period->start === null || $period->end === null) {
-                    continue;
-                }
-
-                $start = max($period->start->getTimestamp(), $day_start_ts);
-                $end = min($period->end->getTimestamp(), $day_end_ts);
+            foreach ($day_sla_periods as [$period_start, $period_end]) {
+                $start = max($period_start->getTimestamp(), $day_start_ts);
+                $end = min($period_end->getTimestamp(), $day_end_ts);
 
                 if ($start >= $end) {
                     continue;
@@ -230,7 +240,9 @@ class SLA
                 $coverage[] = [$start, $end];
             }
 
-            usort($coverage, fn (array $a, array $b) => $a[0] <=> $b[0]);
+            if (count($coverage) > 1) {
+                usort($coverage, fn (array $a, array $b) => $a[0] <=> $b[0]);
+            }
 
             $merged = [];
             foreach ($coverage as [$start, $end]) {
@@ -306,17 +318,10 @@ class SLA
             /**
              * Sum the seconds of every remaining coverage period of the day
              */
-            $day_seconds = 0;
             foreach ($merged as [$start, $end]) {
-                $day_seconds += $end - $start;
+                $total_seconds += $end - $start;
             }
-
-            return $day_seconds;
-
-            /**
-             * Then sum the seconds of every day
-             */
-        })->sum();
+        }
 
         $interval = CarbonInterval::seconds((int) round($total_seconds))->cascade();
 
@@ -330,7 +335,7 @@ class SLA
     }
 
     /**
-     * @return CarbonPeriod[]
+     * @return array<int, array{0: CarbonInterface, 1: CarbonInterface}>
      */
     private function recalculate_sla_periods(CarbonInterface $from, CarbonInterface $to): array
     {
