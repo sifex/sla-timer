@@ -4,25 +4,55 @@ on:
   release:
     types: [released]
 
+permissions:
+  contents: write
+
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           ref: main
 
       - name: Update Changelog
-        uses: stefanzweifel/changelog-updater-action@v1
+        uses: actions/github-script@v9
         with:
-          latest-version: ${{ github.event.release.name }}
-          release-notes: ${{ github.event.release.body }}
+          script: |
+            const fs = require('fs');
+
+            const { data: release } = await github.rest.repos.getRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: context.payload.release.id,
+            });
+
+            const version = release.name || release.tag_name;
+            const date = new Date().toISOString().slice(0, 10);
+            const entry = `## ${version} - ${date}\n\n${release.body ?? ''}\n\n`;
+
+            const file = 'CHANGELOG.md';
+            const content = fs.readFileSync(file, 'utf8');
+            const lines = content.split('\n');
+            const firstVersionIndex = lines.findIndex((line) => line.startsWith('## '));
+
+            if (firstVersionIndex === -1) {
+              fs.writeFileSync(file, content + '\n' + entry);
+            } else {
+              lines.splice(firstVersionIndex, 0, entry.trimEnd());
+              fs.writeFileSync(file, lines.join('\n'));
+            }
 
       - name: Commit updated CHANGELOG
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          branch: main
-          commit_message: Update CHANGELOG
-          file_pattern: CHANGELOG.md
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add CHANGELOG.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update CHANGELOG"
+          git push

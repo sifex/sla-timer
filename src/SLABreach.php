@@ -18,7 +18,7 @@ class SLABreach
         $this->breached_after = CarbonInterval::fromString($string_duration);
     }
 
-    public function check(CarbonInterval $current_interval)
+    public function check(CarbonInterval $current_interval): void
     {
         $this->breached = $current_interval->cascade()->totalSeconds > $this->breached_after->cascade()->totalSeconds;
     }

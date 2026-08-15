@@ -3,13 +3,14 @@
 namespace Sifex\SlaTimer\Agenda;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
 use Sifex\SlaTimer\Interfaces\AgendaInterface;
 
 class Weekly implements AgendaInterface
 {
-    /** @var string[] */
+    /** @var array<int, array{0: string, 1: string}> */
     public array $time_periods = [];
 
     /** @var string[] */
@@ -22,9 +23,12 @@ class Weekly implements AgendaInterface
         return $this;
     }
 
+    /**
+     * @param  array<int, array{0: string, 1: string}>  $periods
+     */
     public function addTimePeriods(...$periods): Weekly
     {
-        collect([$periods])->flatten(2)->each(function ($period) {
+        collect([$periods])->flatten(1)->each(function ($period) {
             $this->addTimePeriod($period[0], $period[1]);
         });
 
@@ -38,6 +42,9 @@ class Weekly implements AgendaInterface
         return $this;
     }
 
+    /**
+     * @param  array<int, string>  $days
+     */
     public function setDays(array $days): Weekly
     {
         $this->days = [];
@@ -58,16 +65,21 @@ class Weekly implements AgendaInterface
      */
     public function toPeriods(CarbonPeriod $subject_period): array
     {
-        $start_date = $subject_period->start->clone();
-        $end_date = $subject_period->end->clone();
+        $start_date = $subject_period->start;
+        $end_date = $subject_period->end;
 
-        $new_period = CarbonPeriod::start($start_date)->end($end_date)->setDateInterval(CarbonInterval::day());
+        if ($start_date === null || $end_date === null) {
+            return [];
+        }
 
-        return collect($new_period)
-            ->filter(function (Carbon $day) {
+        $new_period = CarbonPeriod::create(Carbon::parse($start_date)->startOfDay(), Carbon::parse($end_date)->startOfDay())
+            ->setDateInterval(CarbonInterval::day());
+
+        return collect(iterator_to_array($new_period))
+            ->filter(function (CarbonInterface $day) {
                 return collect($this->days)->contains($day->dayName);
             })
-            ->flatMap(function (Carbon $day) {
+            ->flatMap(function (CarbonInterface $day) {
                 return collect($this->time_periods)
                     ->map(function (array $t) use ($day) {
                         return CarbonPeriod::create(
@@ -78,6 +90,4 @@ class Weekly implements AgendaInterface
                     });
             })->toArray();
     }
-
-    public function getPeriods(CarbonPeriod $subject_period) {}
 }

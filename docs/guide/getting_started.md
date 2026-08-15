@@ -10,7 +10,7 @@ $ composer require sifex/sla-timer
 
 ### Requirements
 
-- `php` - Version 8.0 or higher
+- `php` - Version 8.3 or higher
 
 ## Example Usage
 

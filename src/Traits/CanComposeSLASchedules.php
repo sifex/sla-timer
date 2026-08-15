@@ -4,7 +4,6 @@ namespace Sifex\SlaTimer\Traits;
 
 use Sifex\SlaTimer\Agenda\Weekly;
 use Sifex\SlaTimer\Interfaces\AgendaInterface;
-use Sifex\SlaTimer\SLASchedule;
 
 trait CanComposeSLASchedules
 {
@@ -67,10 +66,9 @@ trait CanComposeSLASchedules
     }
 
     /**
-     * @param  string|array  $days
-     * @return SLASchedule|CanComposeSLASchedules
+     * @param  string|array<int, string>  $days
      */
-    public function on($days): self
+    public function on(string|array $days): static
     {
         if (gettype($days) === 'string') {
             $days = [$days];

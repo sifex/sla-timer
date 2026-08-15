@@ -16,19 +16,18 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "cmixin/enhanced-period": "^1.2",
-        "illuminate/collections": "^8|^9|^10|^11",
-        "nesbot/carbon": "^2",
+        "illuminate/collections": "^11|^12|^13",
+        "nesbot/carbon": "^3",
         "spatie/period": "^2"
     },
     "require-dev": {
-        "laravel/pint": "^1.0",
-        "pestphp/pest": "^1.21",
-        "phpstan/phpstan": "^1.8",
-        "phpunit/phpunit": "^9.0",
-        "spatie/invade": "^1.1",
-        "spatie/pest-plugin-test-time": "^1.1"
+        "laravel/pint": "^1.30",
+        "pestphp/pest": "^4.7",
+        "phpstan/phpstan": "^2",
+        "spatie/invade": "^2",
+        "spatie/pest-plugin-test-time": "^2.2"
     },
     "autoload": {
         "psr-4": {
@@ -42,7 +41,7 @@
     },
     "scripts": {
         "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest--coverage-clover clover.xml"
+        "test-coverage": "vendor/bin/pest --coverage-clover clover.xml"
     },
     "config": {
         "allow-plugins": {
