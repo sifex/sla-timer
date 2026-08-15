@@ -292,6 +292,26 @@ it('tests empty schedule', function () {
     expect($sla->duration($subject_start_time)->totalSeconds)->toEqual(0);
 });
 
+it('counts SLA time on the final day when it ends before the start time-of-day', function () {
+    $sla = SLA::fromSchedule(
+        SLASchedule::create()->from('09:00:00')->to('17:00:00')->onWeekdays()
+    );
+
+    $duration = $sla->duration('2023-12-01 16:58:00', '2023-12-04 09:01:01');
+
+    expect($duration->totalSeconds)->toEqual(181);
+});
+
+it('counts SLA time across multiple days', function () {
+    $sla = SLA::fromSchedule(
+        SLASchedule::create()->from('08:00:00')->to('17:00:00')->onWeekdays()
+    );
+
+    $duration = $sla->duration('2023-04-27 15:43:00', '2023-04-28 13:02:00');
+
+    expect($duration->totalMinutes)->toEqual(379);
+});
+
 // it('tests 0 length SLAs', function () {
 //    $subject_start_time = '2022-07-21 08:59:00';
 //    $time_now = '2022-07-21 09:00:30';

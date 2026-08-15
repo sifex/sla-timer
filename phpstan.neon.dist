@@ -1,0 +1,11 @@
+includes:
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - src
+
+    ignoreErrors:
+        # Provided at runtime by the Cmixin\EnhancedPeriod mixin
+        - '#Call to an undefined method Carbon\\CarbonPeriod::diff\(\)#'

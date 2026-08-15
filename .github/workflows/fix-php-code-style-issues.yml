@@ -2,20 +2,39 @@ name: Fix PHP code style issues
 
 on: [push]
 
+permissions:
+  contents: write
+
 jobs:
   php-code-styling:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.head_ref }}
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Install composer dependencies
+        run: composer install --no-interaction --no-progress
+
       - name: Fix PHP code style issues
-        uses: aglipanci/laravel-pint-action@0.1.0
+        run: vendor/bin/pint
 
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Fix styling
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No styling changes"
+            exit 0
+          fi
+          git commit -m "Fix styling"
+          git push

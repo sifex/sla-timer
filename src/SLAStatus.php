@@ -11,7 +11,10 @@ class SLAStatus
 
     public CarbonInterval $interval;
 
-    public function __construct($breaches, $interval)
+    /**
+     * @param  SLABreach[]  $breaches
+     */
+    public function __construct(array $breaches, CarbonInterval $interval)
     {
         $this->breaches = $breaches;
         $this->interval = $interval;
