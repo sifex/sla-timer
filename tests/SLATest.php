@@ -1,6 +1,5 @@
 <?php
 
-use Carbon\CarbonInterval;
 use Sifex\SlaTimer\SLA;
 use Sifex\SlaTimer\SLABreach;
 use Sifex\SlaTimer\SLASchedule;
@@ -10,19 +9,17 @@ use function Spatie\PestPluginTestTime\testTime;
 /**
  * Daily Periods
  */
-it('collapses intervals', function () {
-    $interval_one = CarbonInterval::seconds(30);
-    $interval_two = CarbonInterval::minutes(30);
-    $interval_three = CarbonInterval::seconds(180);
+it('collapses overlapping SLA periods into a single interval', function () {
+    $sla = SLA::fromSchedule(
+        SLASchedule::create()
+            ->from('09:00:00')->to('12:00:00')
+            ->andFrom('11:00:00')->to('17:00:00')
+            ->everyDay()
+    );
 
-    /** @var CarbonInterval $combined */
-    $combined = invade(new SLA(SLASchedule::create()->from('')))->combine_intervals([
-        $interval_one,
-        $interval_two,
-        $interval_three,
-    ]);
+    $duration = $sla->duration('2023-04-27 08:00:00', '2023-04-27 18:00:00');
 
-    expect($combined->totalSeconds)->toEqual(30 + (30 * 60) + 180);
+    expect($duration->totalSeconds)->toEqual(28800);
 });
 
 it('tests the SLA across a short duration', function () {
