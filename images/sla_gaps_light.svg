@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="450px" height="35px" viewBox="0 0 450 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>sla_gaps_light</title>
+    <defs>
+        <radialGradient cx="2.3433057%" cy="0.861786714%" fx="2.3433057%" fy="0.861786714%" r="1438.66073%" gradientTransform="translate(0.023433,0.008618),scale(0.067857,1.000000),rotate(3.940685),translate(-0.023433,-0.008618)" id="radialGradient-1">
+            <stop stop-color="#FFB14D" offset="0%"></stop>
+            <stop stop-color="#FF4F6E" offset="100%"></stop>
+        </radialGradient>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="linearGradient-2">
+            <stop stop-color="#FF4F6E" offset="0%"></stop>
+            <stop stop-color="#FFB14D" offset="100%"></stop>
+        </linearGradient>
+        <path d="M284.095159,0 L295,0 C298.313708,-6.08718376e-16 301,2.6862915 301,6 L301,13 C301,16.3137085 298.313708,19 295,19 L284.095159,19 C280.78145,19 278.095159,16.3137085 278.095159,13 L278.095159,6 C278.095159,2.6862915 280.78145,6.08718376e-16 284.095159,0 Z M219.821369,0 L230.894011,0 C234.20772,-6.08718376e-16 236.894011,2.6862915 236.894011,6 L236.894011,13 C236.894011,16.3137085 234.20772,19 230.894011,19 L219.821369,19 C216.50766,19 213.821369,16.3137085 213.821369,13 L213.821369,6 C213.821369,2.6862915 216.50766,6.08718376e-16 219.821369,0 Z M155.547579,0 L166.620222,0 C169.93393,-1.4968968e-15 172.620222,2.6862915 172.620222,6 L172.620222,13 C172.620222,16.3137085 169.93393,19 166.620222,19 L155.547579,19 C152.233871,19 149.547579,16.3137085 149.547579,13 L149.547579,6 C149.547579,2.6862915 152.233871,-2.79460044e-16 155.547579,0 Z M91.2737896,0 L102.346432,0 C105.660141,-6.08718376e-16 108.346432,2.6862915 108.346432,6 L108.346432,13 C108.346432,16.3137085 105.660141,19 102.346432,19 L91.2737896,19 C87.9600812,19 85.2737896,16.3137085 85.2737896,13 L85.2737896,6 C85.2737896,2.6862915 87.9600812,6.08718376e-16 91.2737896,0 Z M27,0 L38.0726424,0 C41.3863509,-6.08718376e-16 44.0726424,2.6862915 44.0726424,6 L44.0726424,13 C44.0726424,16.3137085 41.3863509,19 38.0726424,19 L27,19 C23.6862915,19 21,16.3137085 21,13 L21,6 C21,2.6862915 23.6862915,6.08718376e-16 27,0 Z" id="path-3"></path>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="-2" y="-2" width="284" height="23">
+            <rect x="19" y="-2" width="284" height="23" fill="white"></rect>
+            <use xlink:href="#path-3" fill="black"></use>
+        </mask>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="SLA-Gaps-Light" transform="translate(-77.000000, -68.000000)">
+            <g id="sla_gaps_light" transform="translate(77.000000, 66.000000)">
+                <g id="Group-8" transform="translate(0.000000, 16.000000)">
+                    <rect id="Rectangle-Copy" fill="#D8D8D8" x="0" y="0" width="64" height="19" rx="4.8"></rect>
+                    <rect id="Rectangle-Copy-8" fill="#D8D8D8" opacity="0.335635231" x="386" y="0" width="64" height="19" rx="4.8"></rect>
+                    <rect id="Rectangle-Copy-7" fill="#CBCBCB" opacity="0.335635231" x="321.666667" y="0" width="64" height="19" rx="4.8"></rect>
+                    <rect id="Rectangle-Copy-6" fill="#D8D8D8" x="257.333333" y="0" width="64" height="19" rx="4.8"></rect>
+                    <rect id="Rectangle-Copy-5" fill="#CBCBCB" x="193" y="0" width="64" height="19" rx="4.8"></rect>
+                    <rect id="Rectangle-Copy-4" fill="#D8D8D8" x="128.666667" y="0" width="64" height="19" rx="4.8"></rect>
+                    <rect id="Rectangle-Copy-2" fill="#CBCBCB" x="64.3333333" y="0" width="64" height="19" rx="4.8"></rect>
+                    <use id="Combined-Shape" stroke="url(#linearGradient-2)" mask="url(#mask-4)" stroke-width="4" fill-opacity="0.3" fill="url(#radialGradient-1)" stroke-dasharray="3,1" xlink:href="#path-3"></use>
+                </g>
+                <text id="M" opacity="0.384230841" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="10.4" font-weight="600" fill="#717171">
+                    <tspan x="27.4398438" y="10">M</tspan>
+                </text>
+                <text id="T" opacity="0.384230841" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="10.4" font-weight="600" fill="#717171">
+                    <tspan x="93.8160156" y="10">T</tspan>
+                </text>
+                <text id="W" opacity="0.384230841" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="10.4" font-weight="600" fill="#717171">
+                    <tspan x="155.866016" y="10">W</tspan>
+                </text>
+                <text id="T" opacity="0.384230841" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="10.4" font-weight="600" fill="#717171">
+                    <tspan x="221.816016" y="10">T</tspan>
+                </text>
+                <text id="F" opacity="0.384230841" font-family="SFProDisplay-Heavy, SF Pro Display" font-size="10.4" font-weight="600" fill="#717171">
+                    <tspan x="286.095312" y="10">F</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>
