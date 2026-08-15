@@ -286,6 +286,49 @@ it('ignores a holiday that falls on a day without SLA coverage', function () {
 });
 
 /**
+ * Long durations (regression: these used to be quadratic in the number of days/pauses)
+ */
+it('calculates a year-long subject with a holiday on every day', function () {
+    $sla = SLA::fromSchedule(
+        SLASchedule::create()->from('09:00:00')->to('17:00:00')->onWeekdays()
+    );
+
+    for ($i = 0; $i < 365; $i++) {
+        $sla->addHoliday(date('Y-m-d', strtotime("2023-01-01 +{$i} days")));
+    }
+
+    $duration = $sla->duration('2023-01-01 09:00:00', '2023-12-31 17:00:00');
+
+    expect($duration->totalSeconds)->toEqual(0);
+});
+
+it('calculates a year-long subject with weekly pause windows', function () {
+    $sla = SLA::fromSchedule(
+        SLASchedule::create()->from('09:00:00')->to('17:00:00')->onWeekdays()
+    );
+
+    for ($i = 0; $i < 52; $i++) {
+        $sla->addPause(date('Y-m-d 12:00:00', strtotime("2023-01-04 +{$i} weeks")), date('Y-m-d 13:00:00', strtotime("2023-01-04 +{$i} weeks")));
+    }
+
+    $duration = $sla->duration('2023-01-01 09:00:00', '2024-01-01 09:00:00');
+
+    // 260 weekdays x 8h minus 52 weekly 1h pauses, with each pause diff
+    // removing 2 boundary seconds (closed-interval semantics in spatie/period)
+    expect($duration->totalSeconds)->toEqual(7300696);
+});
+
+it('calculates a year-long subject without pauses', function () {
+    $sla = SLA::fromSchedule(
+        SLASchedule::create()->from('09:00:00')->to('17:00:00')->onWeekdays()
+    );
+
+    $duration = $sla->duration('2023-01-01 09:00:00', '2024-01-01 09:00:00');
+
+    expect($duration->totalSeconds)->toEqual(7488000);
+});
+
+/**
  * Breaches
  */
 it('returns only breached breaches from the breaches accessor', function () {

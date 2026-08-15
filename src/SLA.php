@@ -145,8 +145,12 @@ class SLA
         // TODO End period should just be up until the next schedule is made
         $sla_periods = $this->recalculate_sla_periods($subject_start, $subject_end);
 
+        $pause_periods = collect($this->pause_periods)
+            ->map(fn (SLAPause $pp) => $pp->toPeriod()->setDateInterval(CarbonInterval::seconds()))
+            ->toArray();
+
         // Iterate over the period
-        $interval = collect(iterator_to_array($main_target_period))->map(function (Carbon $daily_subject_period) use ($subject_start, $subject_end, &$sla_periods) {
+        $total_seconds = collect(iterator_to_array($main_target_period))->map(function (Carbon $daily_subject_period) use ($subject_start, $subject_end, &$sla_periods, $pause_periods) {
             /**
              * After we've divided each day, find where the start and end times are by min/max'ing them
              */
@@ -174,10 +178,23 @@ class SLA
             }
 
             /**
+             * Only consider SLA periods that can possibly overlap the current day, otherwise
+             * the work below would scale with the entire subject duration on every day.
+             */
+            $day_sla_periods = collect($sla_periods)
+                ->filter(function (CarbonPeriod $sla_period) use ($start_of_day, $end_of_day) {
+                    return $sla_period->start !== null
+                        && $sla_period->end !== null
+                        && $sla_period->start->getTimestamp() < $end_of_day->getTimestamp()
+                        && $sla_period->end->getTimestamp() > $start_of_day->getTimestamp();
+                })
+                ->values();
+
+            /**
              * SLA Overlap
              * This function has been optimised
              */
-            $sla_coverage_periods = collect($sla_periods)
+            $sla_coverage_periods = $day_sla_periods
                 ->map(function (CarbonPeriod $sla_period) use ($start_of_day, $end_of_day) {
                     if ($sla_period->start === null || $sla_period->end === null) {
                         return null;
@@ -201,11 +218,20 @@ class SLA
                     return $p === null ? $carry : (count($carry) ? [...$p->diff(...$carry), ...$carry] : [$p]);
                 }, []);
 
-            if ($this->pause_periods) {
-                $sla_coverage_periods = collect($sla_coverage_periods)->flatMap(function (CarbonPeriod $period): array {
-                    $pause_periods = collect($this->pause_periods)->map(fn (SLAPause $pp) => $pp->toPeriod()->setDateInterval(CarbonInterval::seconds()))->toArray();
+            if ($pause_periods) {
+                /**
+                 * Only pauses that overlap the current day can affect it, diffing against every
+                 * pause of the subject duration would be quadratic in the number of pauses.
+                 */
+                $day_pause_periods = array_values(array_filter($pause_periods, function (CarbonPeriod $pause) use ($start_of_day, $end_of_day) {
+                    return $pause->start !== null
+                        && $pause->end !== null
+                        && $pause->start->getTimestamp() < $end_of_day->getTimestamp()
+                        && $pause->end->getTimestamp() > $start_of_day->getTimestamp();
+                }));
 
-                    return $period->diff(...$pause_periods);
+                $sla_coverage_periods = collect($sla_coverage_periods)->flatMap(function (CarbonPeriod $period) use ($day_pause_periods) {
+                    return $period->diff(...$day_pause_periods);
                 })->toArray();
             }
 
@@ -217,12 +243,14 @@ class SLA
                 ->map(fn (CarbonPeriod $carbonPeriod): CarbonInterval => self::calculate_interval($carbonPeriod))
                 ->toArray();
 
-            return self::combine_intervals($intervals);
+            return self::combine_intervals($intervals)->totalSeconds;
 
             /**
-             * Then combine all intervals
+             * Then sum the seconds of every day
              */
-        })->pipe(fn ($c) => self::combine_intervals($c->toArray()));
+        })->sum();
+
+        $interval = CarbonInterval::seconds((int) round($total_seconds))->cascade();
 
         return new SLAStatus(
             collect($this->breach_definitions)
